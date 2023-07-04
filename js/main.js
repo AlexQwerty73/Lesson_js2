@@ -1,114 +1,130 @@
 const doc = document;
- 
-const products = [
-    { id: 1, title: 'product1', category: 'notebooks', img: 'img.jpg', price: 500 },
-    { id: 2, title: 'product2', category: 'phone', img: 'phone.jpg', price: 1000 },
-    { id: 3, title: 'product3', category: 'pc', img: 'pc.jpg', price: 1200 },
-    { id: 4, title: 'product4', category: 'ps', img: 'img.jpg', price: 1500 },
-    { id: 5, title: 'product5', category: 'phone', img: 'phone.jpg', price: 700 },
-    { id: 6, title: 'product6', category: 'pc', img: 'pc.jpg', price: 2000 },
-];
-
-const selectContainer = doc.querySelector('.select-container');
-const shopContainer = doc.querySelector('.shop-container');
-const cartContainer = doc.querySelector('.cart-container')
-const cartBtn = doc.querySelector('.cart-btn');
-
-let cart = [];
-
-sortPriceToBig = (arr) => arr.sort((a, b) => a.price - b.price);
-sortPriceToSmall = (arr) => arr.sort((a, b) => b.price - a.price);
-
-sortCategory = (arr, category) => arr.sort((a) => a.category == category ? -1 : 1);
-
-
-selectContainer.innerHTML = renderHTMLSelect(products);
-selectContainer.innerHTML = renderHTMLShop(products);
-
-shopContainer.addEventListener('click', function (e) {
-    if (e.target.tagName === 'BUTTON') {
-        cart.push(e.target.parentNode.innerHTML);
-        cartContainer.innerHTML = ``;
-    }
-});
-
-cartBtn.onclick = (e) => {
-    cartContainer.innerHTML = rendercartHTML(cart);
-
-    for (let i in cart) {
-        let btn = e.target.parentNode.childNodes[3].childNodes[3 + i * 2].childNodes[9]
-        btn.innerText = 'Del';
-        if (btn.className == 'addCart') {
-            btn.classList.remove("addCart");
-            btn.classList.add('delCard')
-        }
-    }
+const productsSelector = '.products';
+const cart = {
+  1: 9,
+  2: 5,
+  3: 3,
 };
 
-cartContainer.onclick = (e) => {
-    if (e.target.tagName === 'BUTTON') {
-        cart.splice(e.target.parentNode.id - 1, 1);
-        cartContainer.innerHTML = rendercartHTML(cart);
+renderProducts(products, productsSelector);
+renderCart(products, cart, 'body');
 
-        let newHTML = ``;
-        let index = 1;
-
-        for (let i of cart) {
-            newHTML += `<div class="shop-item" id="${index++}">` + i.replace('addCart', 'delCard').replace('Add', 'Del') + '</div>';
-        }
-        cart = newHTML;
-        cartContainer.innerHTML = cart;
-    }
-}
-function renderHTMLSelect(arr) {
-    const categorySet = new Set(arr.map(item => item.category));
-    const options = Array.from(categorySet, item => `<option value="${item}">${item}</option>`);
-    return `<select name="category" id="category"><option value="none">none</option>${options.join('')}<option value="ToSmallPrice">ToSmallPrice</option><option value="ToBigPrice">ToBigPrice</option></select>`;
-};
-
-function renderHTMLShop(arr) {
-    let html = ``;
-    for (let item of arr) {
-        html += `
-            <div class="shop-item" id="${item.id}">
-                <img src="../img/${item.img}" alt="#">
-                <p>Title: <span>${item.title}</span></p>
-                <p>Category: <span>${item.category}</span></p>
-                <p>price: <span>${item.price}</span></p>
-                <button class='addCart'>Add</button>
-            </div>
-        `
-    }
-    return html;
+function renderProducts(dataArr, insertSelector) {
+  for (let product of dataArr) {
+    renderProduct(product, insertSelector);
+  }
 }
 
-function selectChangeCategory(arr) {
-    const category = doc.querySelector('#category').value;
-    if (category != 'ToSmallPrice' && category != 'ToBigPrice') {
-        return category == 'none' ? renderHTMLShop(arr) : renderHTMLShop(sortCategory(arr, category));
-    } else {
-        if (category == 'ToSmallPrice') {
-            return renderHTMLShop(sortPriceToSmall(arr));
-        } else if (category == 'ToBigPrice') {
-            return renderHTMLShop(sortPriceToBig(arr));
-        }
-    }
+function renderProduct(prodObj, insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+  const 
+    product = doc.createElement('div'),
+    productImgWrap = doc.createElement('div'),
+    productImg = doc.createElement('img'),
+    productTitle = doc.createElement('h3'),
+    productPriceBlock = doc.createElement('div'),
+    productPrice = doc.createElement('span'),
+    addCart = doc.createElement('button'),
+    productCategory = doc.createElement('span');
+/*
+append, prepend, before, after, replaceWith
+*/ 
 
-    category.addEventListener('change', () => {
-        shopContainer.innerHTML = selectChangeCategory(products);
-    });
+  const {id, title, category, img, price} = prodObj;
+  const imgPath = `./img/products/${category}/${img}`;
+
+  if (!parentEl) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
+  }
+
+  product.className = 'product';
+  product.dataset.id = id;
+
+  productImgWrap.className = 'product-img';
+  productImg.src = imgPath;
+  productImg.alt = img;
+  productImgWrap.append(productImg);
+
+  productTitle.className = 'product-title';
+  productTitle.innerHTML = title;
+
+  productPriceBlock.className = 'product-price-block';
+  productPrice.className = 'product-price';
+  productPrice.innerHTML = price;
+  
+  addCart.className = 'add-cart';
+  addCart.innerHTML = 'Add cart'
+  productPriceBlock.append(productPrice, addCart);
+
+  productCategory.className = 'product-category';
+  productCategory.innerText = category;
+
+  product.append(
+    productImgWrap,
+    productTitle,
+    productPriceBlock,
+    productCategory
+  );
+
+  parentEl.append(product);
+
+  addCart.onclick = addCartHandler;
 }
 
-function rendercartHTML(arr) {
-    let html = `cart:<hr>`;
-    let index = 1;
-    for (let item of arr) {
-        html += `
-        <div class="shop-item" id="${index++}">
-        ${item}
-        </div>
-        `;
-    }
-    return html + `<hr>`
+function renderCart(dataArr, cartProdsObj, insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  const 
+    cart = doc.createElement('div'),
+    cartTitle = doc.createElement('h3'),
+    cartProds = doc.createElement('ul');
+
+  if (!parentEl) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
+  }
+
+  cart.className = 'cart';
+
+  cartTitle.className = 'cart-title';
+  cartTitle.innerText = 'Cart';
+
+  cartProds.className = 'cart-prods';
+
+  parentEl.append(cart);
+  cart.append(cartTitle, cartProds);
+
+  renderCartProds(dataArr, cartProdsObj, '.cart-prods');
+  renderCartTotal(5000, '.cart');
 }
 
+function renderCartProds(dataArr, cartProdsObj, insertSelector) {
+  let count = 1;
+
+  for (id in cartProdsObj) {
+    const qty = cartProdsObj[id];
+    const prod = dataArr.find(item => item.id == id);
+
+    renderCartProd(prod, qty, count, insertSelector);
+    count ++;
+  }
+}
+
+function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  
+}
+
+function renderCartTotal(totalSum, insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  
+}
+
+function addCartHandler() {
+  const id = this.closest('.product').dataset.id;
+  
+  cart[id] = !cart[id] ? 1 : cart[id] + 1;
+}
