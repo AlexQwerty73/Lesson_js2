@@ -1,13 +1,30 @@
 const doc = document;
 const productsSelector = '.products';
 const cart = {
-  1: 9,
-  2: 5,
-  3: 3,
+  // 1: 9,
+  // 2: 5,
+  // 3: 3,
 };
 
+const cartBlock = '.cart';
+const cartBtn = doc.querySelector('.cart-button');
+
 renderProducts(products, productsSelector);
-renderCart(products, cart, 'body');
+
+cartBtn.onclick = function () {
+  if (isElementPresent(cartBlock)) {
+    removeElement(cartBlock);
+  } else {
+    renderCart(products, cart, 'body');
+  }
+}
+
+function findElement(selector) {
+  return document.querySelector(selector);
+}
+function isElementPresent(selector) {
+  return !!findElement(selector);
+}
 
 function renderProducts(dataArr, insertSelector) {
   for (let product of dataArr) {
@@ -17,7 +34,7 @@ function renderProducts(dataArr, insertSelector) {
 
 function renderProduct(prodObj, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-  const 
+  const
     product = doc.createElement('div'),
     productImgWrap = doc.createElement('div'),
     productImg = doc.createElement('img'),
@@ -26,11 +43,11 @@ function renderProduct(prodObj, insertSelector) {
     productPrice = doc.createElement('span'),
     addCart = doc.createElement('button'),
     productCategory = doc.createElement('span');
-/*
-append, prepend, before, after, replaceWith
-*/ 
+  /*
+  append, prepend, before, after, replaceWith
+  */
 
-  const {id, title, category, img, price} = prodObj;
+  const { id, title, category, img, price } = prodObj;
   const imgPath = `./img/products/${category}/${img}`;
 
   if (!parentEl) {
@@ -52,7 +69,7 @@ append, prepend, before, after, replaceWith
   productPriceBlock.className = 'product-price-block';
   productPrice.className = 'product-price';
   productPrice.innerHTML = price;
-  
+
   addCart.className = 'add-cart';
   addCart.innerHTML = 'Add cart'
   productPriceBlock.append(productPrice, addCart);
@@ -75,8 +92,8 @@ append, prepend, before, after, replaceWith
 function renderCart(dataArr, cartProdsObj, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  const 
-    cart = doc.createElement('div'),
+  const
+    cartEl = doc.createElement('div'),
     cartTitle = doc.createElement('h3'),
     cartProds = doc.createElement('ul');
 
@@ -85,18 +102,18 @@ function renderCart(dataArr, cartProdsObj, insertSelector) {
     return false;
   }
 
-  cart.className = 'cart';
+  cartEl.className = cartBlock.replace('.', '');
 
   cartTitle.className = 'cart-title';
   cartTitle.innerText = 'Cart';
 
   cartProds.className = 'cart-prods';
 
-  parentEl.append(cart);
-  cart.append(cartTitle, cartProds);
+  parentEl.append(cartEl);
+  cartEl.append(cartTitle, cartProds);
 
   renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(5000, '.cart');
+  renderCartTotal(totalSum(products, cart), '.cart');
 }
 
 function renderCartProds(dataArr, cartProdsObj, insertSelector) {
@@ -107,24 +124,77 @@ function renderCartProds(dataArr, cartProdsObj, insertSelector) {
     const prod = dataArr.find(item => item.id == id);
 
     renderCartProd(prod, qty, count, insertSelector);
-    count ++;
+    count++;
   }
 }
 
-function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
+function renderCartProd(prodObj, cartProdQty, count, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  
+  const
+    cartProd = doc.createElement('li'),
+    cartProdNumber = doc.createElement('span'),
+    cartProdTitle = doc.createElement('h4'),
+    cartProdQty_ = doc.createElement('span'),
+    cartProdPrice = doc.createElement('span'),
+    cartProdSum = doc.createElement('span');
+
+  cartProd.className = 'cart-prod';
+  cartProdNumber.className = 'cart-prod-number';
+  cartProdTitle.className = 'cart-prod-title';
+  cartProdQty_.className = 'cart-prod-qty';
+  cartProdPrice.className = 'cart-prod-price';
+  cartProdSum.className = 'cart-prod-sum';
+
+  cartProdNumber.innerText = count;
+  cartProdTitle.innerText = prodObj.title;
+  cartProdQty_.innerText = cartProdQty;
+  cartProdPrice.innerText = prodObj.price;
+  cartProdSum.innerText = prodObj.price * cartProdQty;
+
+  parentEl.append(cartProd);
+  cartProd.append(cartProdNumber, cartProdTitle, cartProdQty_, cartProdPrice, cartProdSum);
 }
 
 function renderCartTotal(totalSum, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  
+  const
+    cartTotal = doc.createElement('div'),
+    cartTotalTitle = doc.createElement('span'),
+    cartTotalNumber = doc.createElement('span');
+
+  cartTotal.className = 'cart-total';
+  cartTotalNumber.className = 'cart-total-value';
+
+  cartTotalTitle.innerText = 'Total:';
+  cartTotalNumber.innerText = totalSum;
+
+  parentEl.append(cartTotal);
+  cartTotal.append(cartTotalTitle, cartTotalNumber);
+}
+
+function totalSum(dataArr, cartProdsObj) {
+  let sum = 0;
+  for (let product of dataArr) {
+    const productId = product.id.toString();
+    if (productId in cartProdsObj) {
+      sum += cartProdsObj[productId] * product.price;
+    }
+  }
+  return sum;
 }
 
 function addCartHandler() {
   const id = this.closest('.product').dataset.id;
-  
   cart[id] = !cart[id] ? 1 : cart[id] + 1;
+
+  if (isElementPresent(cartBlock)) {
+    removeElement(cartBlock);
+    renderCart(products, cart, 'body');
+  }
+}
+
+function removeElement(cartBlock) {
+  doc.querySelector(cartBlock).remove();
 }
