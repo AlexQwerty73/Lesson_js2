@@ -162,14 +162,17 @@ function renderCartProd(prodObj, cartProdQty, count, insertSelector) {
   cartProdQty_.innerText = cartProdQty;
   cartProdPrice.innerText = prodObj.price;
   cartProdSum.innerText = prodObj.price * cartProdQty;
-  cartProdDelBtn.innerText = 'X'
+  cartProdDelBtn.innerText = 'X';
 
-  // cartProdBtnP.onclick = function () {
-  //   addProd(this.parentNode.parentNode, cart);
-  // };
+  cartProdBtnP.onclick = function () {
+    addProd(this.parentNode.parentNode, cart);
+  }
+  cartProdBtnM.onclick = function(){
+    minProd(this.parentNode.parentNode, cart);
+  }
 
   cartProdDelBtn.onclick = function(){
-    removeElement();
+    deleteCartProd(this, cart);
   }
 
   parentEl.append(cartProd);
@@ -196,9 +199,43 @@ function renderCartTotal(totalSum, insertSelector) {
 }
 
 function addProd(element, cartProdsObj) {
+  const cartProd = element.closest('.cart-prod');
+  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
+  const productId = cartProdNumber.innerText;
+
+  if (productId in cartProdsObj) {
+    cartProdsObj[productId]++;
+  }
+
+  removeElement(cartBlock);
+  renderCart(products, cart, 'body');
 }
 
+function minProd(element, cartProdsObj) {
+  const cartProd = element.closest('.cart-prod');
+  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
+  const productId = cartProdNumber.innerText;
 
+  if (productId in cartProdsObj && cartProdsObj[productId] > 0) {
+    cartProdsObj[productId]--;
+  }
+
+  removeElement(cartBlock);
+  renderCart(products, cart, 'body');
+}
+function deleteCartProd(element, cartProdsObj) {
+  const cartProd = element.closest('.cart-prod');
+  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
+  const productId = cartProdNumber.innerText;
+
+  if (productId in cartProdsObj) {
+    delete cartProdsObj[productId];
+  }
+
+  cartProd.remove();
+  removeElement(cartBlock);
+  renderCart(products, cart, 'body');
+}
 
 
 function totalSum(dataArr, cartProdsObj) {
