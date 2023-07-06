@@ -8,6 +8,7 @@ const cart = {
 
 const cartBlock = '.cart';
 const cartBtn = doc.querySelector('.cart-button');
+const cartProdBtnPlus = doc.querySelector('.cart-prod-P');
 
 renderProducts(products, productsSelector);
 
@@ -135,25 +136,45 @@ function renderCartProd(prodObj, cartProdQty, count, insertSelector) {
     cartProd = doc.createElement('li'),
     cartProdNumber = doc.createElement('span'),
     cartProdTitle = doc.createElement('h4'),
+    cartProdBtns = doc.createElement('div'),
+    cartProdBtnP = doc.createElement('span'),
+    cartProdBtnM = doc.createElement('span'),
     cartProdQty_ = doc.createElement('span'),
     cartProdPrice = doc.createElement('span'),
-    cartProdSum = doc.createElement('span');
-
+    cartProdSum = doc.createElement('span'),
+    cartProdDelBtn =  doc.createElement('span');
+    
   cartProd.className = 'cart-prod';
   cartProdNumber.className = 'cart-prod-number';
   cartProdTitle.className = 'cart-prod-title';
+  cartProdBtns.className = 'cart-prod-btns';
+  cartProdBtnP.className = 'cart-prod-P';
+  cartProdBtnM.className = 'cart-prod-M';
   cartProdQty_.className = 'cart-prod-qty';
   cartProdPrice.className = 'cart-prod-price';
   cartProdSum.className = 'cart-prod-sum';
+  cartProdDelBtn.className = 'cart-prod-del-btn'
 
   cartProdNumber.innerText = count;
   cartProdTitle.innerText = prodObj.title;
+  cartProdBtnP.innerText = '+';
+  cartProdBtnM.innerText = '-';
   cartProdQty_.innerText = cartProdQty;
   cartProdPrice.innerText = prodObj.price;
   cartProdSum.innerText = prodObj.price * cartProdQty;
+  cartProdDelBtn.innerText = 'X'
+
+  // cartProdBtnP.onclick = function () {
+  //   addProd(this.parentNode.parentNode, cart);
+  // };
+
+  cartProdDelBtn.onclick = function(){
+    removeElement();
+  }
 
   parentEl.append(cartProd);
-  cartProd.append(cartProdNumber, cartProdTitle, cartProdQty_, cartProdPrice, cartProdSum);
+  cartProd.append(cartProdNumber, cartProdTitle, cartProdBtns, cartProdQty_, cartProdPrice, cartProdSum, cartProdDelBtn);
+  cartProdBtns.append(cartProdBtnP, cartProdBtnM);
 }
 
 function renderCartTotal(totalSum, insertSelector) {
@@ -173,6 +194,12 @@ function renderCartTotal(totalSum, insertSelector) {
   parentEl.append(cartTotal);
   cartTotal.append(cartTotalTitle, cartTotalNumber);
 }
+
+function addProd(element, cartProdsObj) {
+}
+
+
+
 
 function totalSum(dataArr, cartProdsObj) {
   let sum = 0;
@@ -195,6 +222,6 @@ function addCartHandler() {
   }
 }
 
-function removeElement(cartBlock) {
-  doc.querySelector(cartBlock).remove();
+function removeElement(element) {
+  doc.querySelector(element).remove();
 }
