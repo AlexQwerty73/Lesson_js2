@@ -1,24 +1,17 @@
 const doc = document;
 const productsSelector = '.products';
 const cart = {
-  // 1: 9,
-  // 2: 5,
-  // 3: 3,
+  1: 2,
+  2: 1,
+  4: 5,
 };
 
-const cartBlock = '.cart';
-const cartBtn = doc.querySelector('.cart-button');
-const cartProdBtnPlus = doc.querySelector('.cart-prod-P');
+// const cart
 
 renderProducts(products, productsSelector);
+renderCart(products, cart, 'body');
 
-cartBtn.onclick = function () {
-  if (isElementPresent(cartBlock)) {
-    removeElement(cartBlock);
-  } else {
-    renderCart(products, cart, 'body');
-  }
-}
+
 
 function findElement(selector) {
   return document.querySelector(selector);
@@ -35,7 +28,12 @@ function renderProducts(dataArr, insertSelector) {
 
 function renderProduct(prodObj, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-  const
+  if (!parentEl) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
+  }
+
+  const 
     product = doc.createElement('div'),
     productImgWrap = doc.createElement('div'),
     productImg = doc.createElement('img'),
@@ -44,17 +42,9 @@ function renderProduct(prodObj, insertSelector) {
     productPrice = doc.createElement('span'),
     addCart = doc.createElement('button'),
     productCategory = doc.createElement('span');
-  /*
-  append, prepend, before, after, replaceWith
-  */
 
-  const { id, title, category, img, price } = prodObj;
+  const {id, title, category, img, price} = prodObj;
   const imgPath = `./img/products/${category}/${img}`;
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
 
   product.className = 'product';
   product.dataset.id = id;
@@ -70,7 +60,7 @@ function renderProduct(prodObj, insertSelector) {
   productPriceBlock.className = 'product-price-block';
   productPrice.className = 'product-price';
   productPrice.innerHTML = price;
-
+  
   addCart.className = 'add-cart';
   addCart.innerHTML = 'Add cart'
   productPriceBlock.append(productPrice, addCart);
@@ -92,29 +82,36 @@ function renderProduct(prodObj, insertSelector) {
 
 function renderCart(dataArr, cartProdsObj, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-
-  const
-    cartEl = doc.createElement('div'),
-    cartTitle = doc.createElement('h3'),
-    cartProds = doc.createElement('ul');
-
   if (!parentEl) {
     console.error(`[${insertSelector}]: Parent element not found !!!`);
     return false;
   }
 
-  cartEl.className = cartBlock.replace('.', '');
+  let cart = doc.querySelector('.cart');
+  if (cart) {
+    cart.remove();
+  }
+
+  cart = doc.createElement('div');
+
+  const 
+    cartTitle = doc.createElement('h3'),
+    cartProds = doc.createElement('ul');
+
+  const totalSum = getTotalCartSum(dataArr, cartProdsObj);
+
+  cart.className = 'cart';
 
   cartTitle.className = 'cart-title';
   cartTitle.innerText = 'Cart';
 
   cartProds.className = 'cart-prods';
 
-  parentEl.append(cartEl);
-  cartEl.append(cartTitle, cartProds);
+  parentEl.prepend(cart);
+  cart.append(cartTitle, cartProds);
 
   renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(totalSum(products, cart), '.cart');
+  renderCartTotal(totalSum, '.cart');
 }
 
 function renderCartProds(dataArr, cartProdsObj, insertSelector) {
@@ -124,141 +121,109 @@ function renderCartProds(dataArr, cartProdsObj, insertSelector) {
     const qty = cartProdsObj[id];
     const prod = dataArr.find(item => item.id == id);
 
-    renderCartProd(prod, qty, count, insertSelector);
-    count++;
+    renderCartProd(count, prod, qty, insertSelector);
+    count ++;
   }
 }
 
-function renderCartProd(prodObj, cartProdQty, count, insertSelector) {
+function renderCartProd(count, prodObj, cartProdQty, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-
-  const
-    cartProd = doc.createElement('li'),
-    cartProdNumber = doc.createElement('span'),
-    cartProdTitle = doc.createElement('h4'),
-    cartProdBtns = doc.createElement('div'),
-    cartProdBtnP = doc.createElement('span'),
-    cartProdBtnM = doc.createElement('span'),
-    cartProdQty_ = doc.createElement('span'),
-    cartProdPrice = doc.createElement('span'),
-    cartProdSum = doc.createElement('span'),
-    cartProdDelBtn =  doc.createElement('span');
-    
-  cartProd.className = 'cart-prod';
-  cartProdNumber.className = 'cart-prod-number';
-  cartProdTitle.className = 'cart-prod-title';
-  cartProdBtns.className = 'cart-prod-btns';
-  cartProdBtnP.className = 'cart-prod-P';
-  cartProdBtnM.className = 'cart-prod-M';
-  cartProdQty_.className = 'cart-prod-qty';
-  cartProdPrice.className = 'cart-prod-price';
-  cartProdSum.className = 'cart-prod-sum';
-  cartProdDelBtn.className = 'cart-prod-del-btn'
-
-  cartProdNumber.innerText = count;
-  cartProdTitle.innerText = prodObj.title;
-  cartProdBtnP.innerText = '+';
-  cartProdBtnM.innerText = '-';
-  cartProdQty_.innerText = cartProdQty;
-  cartProdPrice.innerText = prodObj.price;
-  cartProdSum.innerText = prodObj.price * cartProdQty;
-  cartProdDelBtn.innerText = 'X';
-
-  cartProdBtnP.onclick = function () {
-    addProd(this.parentNode.parentNode, cart);
-  }
-  cartProdBtnM.onclick = function(){
-    minProd(this.parentNode.parentNode, cart);
+  if (!parentEl) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
   }
 
-  cartProdDelBtn.onclick = function(){
-    deleteCartProd(this, cart);
-  }
+  const 
+    product = doc.createElement('li'),
+    productNumber = doc.createElement('span'),
+    productTitle = doc.createElement('h4'),
 
-  parentEl.append(cartProd);
-  cartProd.append(cartProdNumber, cartProdTitle, cartProdBtns, cartProdQty_, cartProdPrice, cartProdSum, cartProdDelBtn);
-  cartProdBtns.append(cartProdBtnP, cartProdBtnM);
+    productQty = doc.createElement('label'),
+    productQtySpinerPlus = doc.createElement('span'),
+    productQtyInput = doc.createElement('input'),
+    productQtySpinerMinus = doc.createElement('span'),
+
+    productPrice = doc.createElement('span'),
+    productSum = doc.createElement('span'),
+    pruductDel = doc.createElement('button');
+
+  const {id, title, price} = prodObj;
+  const productSumValue = cartProdQty * price;
+
+  product.className = 'cart-prod';
+  product.dataset.id = id;
+
+  productNumber.className = 'cart-prod-number';
+  productNumber.innerText = count;
+
+  productTitle.className = 'cart-prod-title';
+  productTitle.innerText = title;
+
+  productQty.className = 'cart-prod-qty';
+  productQtySpinerPlus.className = 'cart-prod-qty-spinner spinner-plus';
+  productQtySpinerPlus.innerHTML = '<i class="fa-solid fa-plus"></i>'
+  productQtyInput.value = cartProdQty;
+  productQtySpinerMinus.className = 'cart-prod-qty-spinner spinner-minus';
+  productQtySpinerMinus.innerHTML = '<i class="fa-solid fa-minus"></i>';
+
+  productPrice.className = 'cart-prod-price';
+  productPrice.innerText = price;
+
+  productSum.className = 'cart-prod-sum';
+  productSum.innerText = productSumValue;
+
+  pruductDel.className = 'cart-prod-del';
+  pruductDel.innerHTML = '<i class="fa-solid fa-trash"></i>';
+
+  productQty.append(
+    productQtySpinerPlus,
+    productQtyInput,
+    productQtySpinerMinus
+  );
+
+  product.append(
+    productNumber,
+    productTitle,
+    productQty,
+    productPrice,
+    productSum,
+    pruductDel
+  );
+
+  parentEl.append(product);
 }
 
 function renderCartTotal(totalSum, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-
-  const
-    cartTotal = doc.createElement('div'),
-    cartTotalTitle = doc.createElement('span'),
-    cartTotalNumber = doc.createElement('span');
-
-  cartTotal.className = 'cart-total';
-  cartTotalNumber.className = 'cart-total-value';
-
-  cartTotalTitle.innerText = 'Total:';
-  cartTotalNumber.innerText = totalSum;
-
-  parentEl.append(cartTotal);
-  cartTotal.append(cartTotalTitle, cartTotalNumber);
-}
-
-function addProd(element, cartProdsObj) {
-  const cartProd = element.closest('.cart-prod');
-  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
-  const productId = cartProdNumber.innerText;
-
-  if (productId in cartProdsObj) {
-    cartProdsObj[productId]++;
+  if (!parentEl) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
   }
 
-  removeElement(cartBlock);
-  renderCart(products, cart, 'body');
+  console.log(totalSum);
+  console.log(insertSelector);
 }
 
-function minProd(element, cartProdsObj) {
-  const cartProd = element.closest('.cart-prod');
-  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
-  const productId = cartProdNumber.innerText;
+function getTotalCartSum(dataArr, cartProdsObj) {
+  let total = 0;
 
-  if (productId in cartProdsObj && cartProdsObj[productId] > 0) {
-    cartProdsObj[productId]--;
+  for (let id in cartProdsObj) {
+    const qty = cartProdsObj[id];
+    const prod = dataArr.find(item => item.id == id);
+    const cost = prod.price * qty;
+
+    total += cost;
   }
 
-  removeElement(cartBlock);
-  renderCart(products, cart, 'body');
-}
-function deleteCartProd(element, cartProdsObj) {
-  const cartProd = element.closest('.cart-prod');
-  const cartProdNumber = cartProd.querySelector('.cart-prod-number');
-  const productId = cartProdNumber.innerText;
-
-  if (productId in cartProdsObj) {
-    delete cartProdsObj[productId];
-  }
-
-  cartProd.remove();
-  removeElement(cartBlock);
-  renderCart(products, cart, 'body');
+  return total;
 }
 
-
-function totalSum(dataArr, cartProdsObj) {
-  let sum = 0;
-  for (let product of dataArr) {
-    const productId = product.id.toString();
-    if (productId in cartProdsObj) {
-      sum += cartProdsObj[productId] * product.price;
-    }
-  }
-  return sum;
+function removeElement(element){
+  doc.querySelector(element).remove();
 }
 
 function addCartHandler() {
   const id = this.closest('.product').dataset.id;
+  
   cart[id] = !cart[id] ? 1 : cart[id] + 1;
-
-  if (isElementPresent(cartBlock)) {
-    removeElement(cartBlock);
-    renderCart(products, cart, 'body');
-  }
-}
-
-function removeElement(element) {
-  doc.querySelector(element).remove();
 }

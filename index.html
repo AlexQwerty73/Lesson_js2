@@ -4,15 +4,29 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="css/style.css">
   <title>Document</title>
 </head>
 <body>
 
+  <div class="header">
+    <div class="container">
+      <div class="header-block">
+        <div class="logo">
+          <i class="fa-brands fa-shopify"></i>
+          <span>Shopify</span>
+        </div>
+        <button class="mini-cart" data-count="0">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <h1>SHOP</h1>
-    <h2>cart (0)</h2>
-    <button class="cart-button">Cart</button>
     <div class="products"></div>
   </div>
 
@@ -22,9 +36,22 @@
       <li class="cart-prod">
         <span class="cart-prod-number">1</span>
         <h4 class="cart-prod-title">Lorem ipsum dolor sit</h4>
-        <span class="cart-prod-qty">5</span>
+        <label class="cart-prod-qty">
+          <span class="cart-prod-qty-spinner spinner-plus">
+            <i class="fa-solid fa-plus"></i>
+          </span>
+          <input type="number" value="5">
+          <span class="cart-prod-qty-spinner spinner-minus">
+            <i class="fa-solid fa-minus"></i>
+          </span>
+        </label>
+        
         <span class="cart-prod-price">1000</span>
         <span class="cart-prod-sum">5000</span>
+
+        <button class="cart-prod-del">
+          <i class="fa-solid fa-trash"></i>
+        </button>
       </li>
       
     </ul>

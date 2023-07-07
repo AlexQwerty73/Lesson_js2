@@ -5,7 +5,6 @@
 }
 
 body {
-  padding-top: 50px;
   font-family: sans-serif;
 }
 
@@ -41,6 +40,49 @@ button {
 .container {
   max-width: 1000px;
   margin: 0 auto;
+}
+
+.header {
+  background: #2a2731;
+  color: white;
+  padding: 20px 0;
+}
+
+.header-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  color: tomato;
+  font-size: 20px;
+}
+
+.mini-cart {
+  border: none;
+  color: white;
+  font-size: 30px;
+  position: relative;
+  padding: 0;
+}
+
+.mini-cart::before {
+  content: attr(data-count);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  background: tomato;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  border-radius: 50%;
 }
 
 .products {
@@ -98,6 +140,8 @@ button {
 /* cart */
 .cart {
   position: fixed;
+  z-index: 1000;
+  
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -134,22 +178,36 @@ button {
   max-height: 35px;
   overflow: hidden;
 }
-/* .cart-prod-qty {} */
-.cart-prod-btns{
+
+.cart-prod-qty {
+  border: none;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
-  margin-right: 0;
+  padding: 0;
 }
-.cart-prod-btns *{
-  border: 1px solid silver;
-  border-radius: 50%;
-  width: 20px;
-  text-align: center;
+.cart-prod-qty-spinner {
+  padding: 10px;
   cursor: pointer;
 }
+.cart-prod-qty-spinner:hover {
+  color: green;
+}
+/* .spinner-plus {}
+.spinner-minus {} */
+
+.cart-prod-qty input {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  background: transparent;
+  border: 1px solid silver;
+}
+.cart-prod-qty input::-webkit-outer-spin-button, 
+.cart-prod-qty input::-webkit-inner-spin-button {
+  display: none;
+}
+
 .cart-prod-qty::after {
   content: "x";
   margin-left: 10px;
@@ -163,9 +221,16 @@ button {
   margin-right: 0;
 }
 
-.cart-prod-del-btn{
-  font-size: 20px;
+.cart-prod-del {
+  border: none;
+  background: transparent;
+  padding: 10px;
+  font-size: 18px;
+  color: silver;
   margin-left: 10px;
+}
+.cart-prod-del:hover {
+  color: tomato;
   cursor: pointer;
 }
 
