@@ -6,11 +6,10 @@ const cart = {
   4: 5,
 };
 
-const cartBtn = doc.querySelector('.mini-cart');
-
-// const cart
+let cartBtn = doc.querySelector('.mini-cart');
 
 renderProducts(products, productsSelector);
+cartBtn.dataset.count = getCartObjCount(products ,cart);
 
 cartBtn.onclick = function(){
   const cartElem = '.cart';
@@ -253,6 +252,7 @@ function getTotalCartSum(dataArr, cartProdsObj) {
 function addNItemToCart(cartProdsObj, prodObj) {
   const id = prodObj.id;
   cartProdsObj[id] += 1;
+  cartBtn.dataset.count = getCartObjCount(products ,cart);
 }
 function minNItemToCart(cartProdsObj, prodObj) {
   const productId = prodObj.id;
@@ -263,9 +263,11 @@ function minNItemToCart(cartProdsObj, prodObj) {
       deleteCartProdObj(cartProdsObj, prodObj)
     }
   }
+  cartBtn.dataset.count = getCartObjCount(products ,cart);
 }
 function deleteCartProdObj(cartProdsObj, prodObj){
     delete cartProdsObj[prodObj.id];
+    cartBtn.dataset.count = getCartObjCount(products ,cart);
 }
 
 function removeElement(element) {
@@ -277,7 +279,20 @@ function addCartHandler() {
   cart[id] = !cart[id] ? 1 : cart[id] + 1;
 
   const cartElem = '.cart';
+
+  cartBtn.dataset.count = getCartObjCount(products ,cart);
+
   if(isElementPresent(cartElem)){
     renderCart(products, cart, 'body');
   }
+}
+
+function getCartObjCount(dataArr, cartProdsObj){
+  let count = 0;
+  for(let item of dataArr){
+    if(item.id in cartProdsObj){
+      count+=cartProdsObj[item.id];
+    }
+  }
+  return count;
 }
