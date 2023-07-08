@@ -65,6 +65,8 @@ button {
   font-size: 30px;
   position: relative;
   padding: 0;
+
+  cursor: pointer;
 }
 
 .mini-cart::before {
