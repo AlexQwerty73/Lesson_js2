@@ -152,6 +152,26 @@ button {
   box-shadow: 5px 5px 15px rgba(0,0,0, .3);
   background: white;
 }
+.cart-close-btn{
+  width: 30px;
+  height: 30px;
+  font-size: 20px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.cart-close-btn:hover{
+  background-color: rgb(255, 63, 63);
+  color: white;
+}
 .cart-prods {
   padding-bottom: 20px;
   border-bottom: 5px solid silver;
