@@ -268,3 +268,31 @@ button {
 }
 
 /* .cart-total-value {}; */
+
+/* -----add-product-block----- */
+.add-item{
+  border: none;cursor: pointer;
+}
+.add-item img{
+  width: 50px;
+}
+.add-product-block{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background: white;
+  box-shadow: 5px 5px 15px rgba(0,0,0, .3);
+  width:200px;
+
+  padding: 10px;
+}
+.add-product-block label{
+  border: none;
+  padding: 0;
+  margin: 5px;
+}
+.add-product-block input{
+  border: 1px solid silver;
+}

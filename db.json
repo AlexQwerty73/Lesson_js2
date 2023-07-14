@@ -41,14 +41,21 @@
       "category": "monitors",
       "img": "prod2.webp",
       "price": 1000
+    },
+    {
+      "title": "product8",
+      "category": "someCategory",
+      "price": "123456789",
+      "img": "prod2.webp",
+      "id": 7
     }
   ],
   "cart": {
-    "1": 19,
-    "2": 6,
-    "3": 6,
-    "4": 10,
-    "5": 1,
-    "6": 1
+    "1": 13,
+    "2": 11,
+    "3": 16,
+    "4": 4,
+    "5": 5,
+    "6": 3
   }
 }

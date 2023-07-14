@@ -7,6 +7,7 @@ const urls = {
   products: 'http://localhost:3000/products',
   cart: 'http://localhost:3000/cart'
 }
+const addItemBtn = doc.querySelector('.add-item');
 
 let products = [];
 
@@ -30,6 +31,7 @@ fetch(urls.cart)
 
 
 renderProducts(products, productsSelector);
+
 cartBtn.dataset.count = getCartObjCount(products, cart);
 
 cartBtn.onclick = function () {
@@ -44,6 +46,15 @@ cartBtn.onclick = function () {
         cartBtn.dataset.count = getCartObjCount(products, cart);
         renderCart(products, cart, 'body');
       });
+  }
+}
+
+addItemBtn.onclick = function () {
+  const el = '.add-product-block'
+  if (isElementPresent(el)) {
+    removeElement(el);
+  } else {
+    renderAddProduct('body');
   }
 }
 
@@ -309,6 +320,87 @@ function removeElement(element) {
   doc.querySelector(element).remove();
 }
 
+function renderAddProduct(insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  const
+    addProduct = doc.createElement('div'),
+    addProductTitle = doc.createElement('h2'),
+    addProductForm = doc.createElement('form'),
+    addProductFormTitleLabel = doc.createElement('label'),
+    addProductFormTitleInput = doc.createElement('input'),
+    addProductFormCategoryLabel = doc.createElement('label'),
+    addProductFormCategoryInput = doc.createElement('input'),
+    addProductFormPriceLabel = doc.createElement('label'),
+    addProductFormPriceInput = doc.createElement('input'),
+    addProductFormImgInput = doc.createElement('input'),
+    addProductFormImgLabel = doc.createElement('label'),
+    addProductFormBtn = doc.createElement('button');
+
+  addProduct.className = 'add-product-block';
+  addProductForm.className = 'add-produc';
+  addProductFormTitleInput.className = 'add-product-title';
+  addProductFormCategoryInput.className = 'add-product-category';
+  addProductFormPriceInput.className = 'add-product-img';
+  addProductFormImgInput.className = 'add-product-price';
+  addProductFormBtn.className = 'add-product-btn';
+
+  addProductTitle.innerText = 'Add Product';
+  addProductFormTitleLabel.innerText = 'Title:';
+  addProductFormCategoryLabel.innerText = 'Category:'
+  addProductFormPriceLabel.innerText = 'Price:';
+  addProductFormImgLabel.innerText = 'Img:';
+  addProductFormBtn.innerText = 'Add';
+
+  parentEl.append(addProduct);
+  addProduct.append(addProductTitle, addProductForm);
+  addProductForm.append(
+    addProductFormTitleLabel,
+    addProductFormTitleInput,
+    addProductFormCategoryLabel,
+    addProductFormCategoryInput,
+    addProductFormPriceLabel,
+    addProductFormPriceInput,
+    addProductFormImgLabel,
+    addProductFormImgInput,
+    addProductFormBtn
+  );
+
+  addProductFormBtn.onclick = function (e) {
+    e.preventDefault();
+
+    const newId = products[products.length - 1].id + 1;
+    const title = addProductFormTitleInput.value;
+    const category = addProductFormCategoryInput.value;
+    const price = addProductFormPriceInput.value;
+    const img = addProductFormImgInput.value;
+
+    console.log(newId, title, category, price, img);
+
+    const newProduct = {
+      title: title,
+      category: category,
+      price: price,
+      img: img
+    };
+
+    fetch(urls.products, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newProduct)
+    })
+      .then(response => {
+        return response.json();
+      })
+      .then(data => {
+        products.push(data);
+        renderProduct(data, productsSelector);
+      });
+  }
+}
+
 function addCartHandler() {
   const id = this.closest('.product').dataset.id;
 
@@ -323,6 +415,7 @@ function addCartHandler() {
       if (isElementPresent(cartElem)) {
         renderCart(products, cart, 'body');
       }
+
       fetch(urls.cart, {
         method: 'post',
         headers: {
