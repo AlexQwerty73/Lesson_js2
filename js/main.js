@@ -5,11 +5,13 @@ const cartElem = '.cart';
 let cart = {};
 const urls = {
   products: 'http://localhost:3000/products',
-  cart: 'http://localhost:3000/cart'
+  cart: 'http://localhost:3000/cart',
+  users: 'http://localhost:3000/users'
 }
 const addItemBtn = doc.querySelector('.add-item');
 
 let products = [];
+let user = '';
 
 // queries
 //get, post...
@@ -31,6 +33,7 @@ fetch(urls.cart)
 
 
 renderProducts(products, productsSelector);
+renderLogInIcon('.login-container');
 
 cartBtn.dataset.count = getCartObjCount(products, cart);
 
@@ -49,14 +52,6 @@ cartBtn.onclick = function () {
   }
 }
 
-addItemBtn.onclick = function () {
-  const el = '.add-product-block'
-  if (isElementPresent(el)) {
-    removeElement(el);
-  } else {
-    renderAddProduct('body');
-  }
-}
 
 function findElement(selector) {
   return document.querySelector(selector);
@@ -335,7 +330,8 @@ function renderAddProduct(insertSelector) {
     addProductFormPriceInput = doc.createElement('input'),
     addProductFormImgInput = doc.createElement('input'),
     addProductFormImgLabel = doc.createElement('label'),
-    addProductFormBtn = doc.createElement('button');
+    addProductFormBtn = doc.createElement('button'),
+    addProductCloseBtn = doc.createElement('button');
 
   addProduct.className = 'add-product-block';
   addProductForm.className = 'add-produc';
@@ -344,6 +340,7 @@ function renderAddProduct(insertSelector) {
   addProductFormPriceInput.className = 'add-product-img';
   addProductFormImgInput.className = 'add-product-price';
   addProductFormBtn.className = 'add-product-btn';
+  addProductCloseBtn.className = 'add-product-close-btn'
 
   addProductTitle.innerText = 'Add Product';
   addProductFormTitleLabel.innerText = 'Title:';
@@ -351,6 +348,7 @@ function renderAddProduct(insertSelector) {
   addProductFormPriceLabel.innerText = 'Price:';
   addProductFormImgLabel.innerText = 'Img:';
   addProductFormBtn.innerText = 'Add';
+  addProductCloseBtn.innerText = 'X';
 
   parentEl.append(addProduct);
   addProduct.append(addProductTitle, addProductForm);
@@ -363,7 +361,8 @@ function renderAddProduct(insertSelector) {
     addProductFormPriceInput,
     addProductFormImgLabel,
     addProductFormImgInput,
-    addProductFormBtn
+    addProductFormBtn,
+    addProductCloseBtn
   );
 
   addProductFormBtn.onclick = function (e) {
@@ -399,6 +398,197 @@ function renderAddProduct(insertSelector) {
         renderProduct(data, productsSelector);
       });
   }
+
+  addProductCloseBtn.onclick = function (e) {
+    e.preventDefault();
+
+    const element = '.add-product-block'
+    removeElement(element);
+
+  }
+}
+function renderModalWindow(insertSelector, renderClassName, title) {
+  const parentEl = checkPresentElements(insertSelector, renderClassName);
+  if (!parentEl) {
+    return false;
+  }
+
+  const
+    modalWindow = doc.createElement('div'),
+    modalWindowTitle = doc.createElement('h3'),
+    modalWindowContent = doc.createElement('div'),
+    modalWindowCloseBtn = doc.createElement('button');
+
+  modalWindow.className = renderClassName;
+
+  modalWindowTitle.className = `${renderClassName}-title`;
+  modalWindowTitle.innerText = title;
+
+  modalWindowContent.className = `${renderClassName}-content`;
+
+  modalWindowCloseBtn.className = `${renderClassName}-close-btn`;
+  modalWindowCloseBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+
+  parentEl.prepend(modalWindow);
+  modalWindow.append(
+    modalWindowTitle,
+    modalWindowContent,
+    modalWindowCloseBtn
+  );
+
+  // events
+
+  modalWindowCloseBtn.onclick = function () {
+    modalWindow.remove();
+  };
+
+  return modalWindowContent;
+}
+function renderLoginForm(insertSelector, renderClassName) {
+  const parentEl = checkPresentElements(insertSelector, renderClassName);
+  if (!parentEl) {
+    return false;
+  }
+
+  const modalWindow = renderModalWindow('body', 'modal-window', 'Enter auth data');
+
+  const
+    loginForm = doc.createElement('form'),
+    loginInput = doc.createElement('input'),
+    pwdInput = doc.createElement('input'),
+    submitBtn = doc.createElement('button');
+
+  loginInput.name = 'login';
+  loginInput.placeholder = 'enter login';
+
+  pwdInput.name = 'pwd';
+  pwdInput.placeholder = 'enter pwd';
+  pwdInput.type = 'password';
+
+  submitBtn.innerText = 'login';
+
+  loginForm.append(
+    loginInput,
+    pwdInput,
+    submitBtn
+  );
+
+  modalWindow.append(loginForm);
+
+  submitBtn.onclick = function (e) {
+    e.preventDefault();
+
+    let userArr = [];
+    fetch(urls.users)
+      .then(res => res.json())
+      .then(data => {
+        userArr = data;
+
+        const inputLogVal = loginInput.value;
+        const inputPasVal = pwdInput.value;
+        let user__ = '';
+        for (let user_ of userArr) {
+          if (user_.login == inputLogVal && user_.password == inputPasVal) {
+            user__ = inputLogVal;
+            break;
+          }
+        }
+        if (user__ == '') {
+          alert('Login or password is incorrect!')
+        } else {
+          removeElement('.' + renderClassName);
+          renderAddItemBtn('.user-action');
+          user = user__;
+          console.log(`User ${user} is logged in!`);
+        }
+
+        renderLogInIcon('.login-container');
+
+      });
+  }
+}
+function renderLogInIcon(insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  const
+    btnLogin = doc.createElement('button'),
+    icon = doc.createElement('i');
+
+  let dataTitle =
+    user == '' ?
+      'login' :
+      'logout';
+
+  icon.className =
+    user == '' ?
+      'fa-solid fa-right-to-bracket' :
+      'fa-solid fa-right-from-bracket';
+
+  btnLogin.className = 'login button-icon';
+  btnLogin.dataset.title = dataTitle;
+
+  const btn = '.login.button-icon'
+  if (isElementPresent(btn)) {
+    removeElement(btn);
+  }
+
+  btnLogin.onclick = function (e) {
+    e.preventDefault();
+
+    if (dataTitle == 'login') {
+      if (user == '') {
+        renderLoginForm('body', 'modal-window');
+      }
+    } else if (dataTitle == 'logout') {
+      if (isElementPresent('.add-item')) {
+        removeElement('.add-item');
+        icon.className = 'fa-solid fa-right-to-bracket';
+        dataTitle = 'login';
+        user = '';
+      }
+    }
+  }
+
+  parentEl.append(btnLogin);
+  btnLogin.append(icon);
+}
+
+function renderAddItemBtn(insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+
+  const
+    addItemBtn = doc.createElement('button'),
+    addItemBtnIcon = doc.createElement('i');
+
+  addItemBtn.className = 'add-item';
+  addItemBtnIcon.className = 'fa-solid fa-calendar-plus';
+
+  parentEl.prepend(addItemBtn);
+  addItemBtn.append(addItemBtnIcon);
+
+
+  addItemBtn.onclick = function () {
+    const el = '.add-product-block'
+    if (isElementPresent(el)) {
+      removeElement(el);
+    } else {
+      renderAddProduct('body');
+    }
+  }
+}
+
+function checkPresentElements(insertSelector, renderClassName) {
+  const el = doc.querySelector(insertSelector);
+  const renderEl = doc.querySelector('.' + renderClassName);
+
+  renderEl && renderEl.remove();
+
+  if (!el) {
+    console.error(`[${insertSelector}]: Parent element not found !!!`);
+    return false;
+  }
+
+  return el;
 }
 
 function addCartHandler() {

@@ -59,6 +59,19 @@ button {
   font-size: 20px;
 }
 
+.login-container button{
+  border: none;
+  padding: 0;
+}
+ i::before{
+  font-size: 30px;
+  color: white;
+}
+.user-action{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .mini-cart {
   border: none;
   color: white;
@@ -92,6 +105,7 @@ button {
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .product {
   border: 2px solid silver;
   padding: 10px;
@@ -105,6 +119,7 @@ button {
   height: 200px;
   padding: 20px;
 }
+
 .product-img img {
   width: 100%;
   height: 100%;
@@ -121,6 +136,7 @@ button {
   justify-content: space-between;
   align-items: center;
 }
+
 /* .product-price {}
 .add-cart {} */
 .add-cart:hover {
@@ -128,6 +144,7 @@ button {
   color: white;
   cursor: pointer;
 }
+
 .product-category {
   position: absolute;
   top: 0;
@@ -143,16 +160,17 @@ button {
 .cart {
   position: fixed;
   z-index: 1000;
-  
+
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 
   padding: 50px;
-  box-shadow: 5px 5px 15px rgba(0,0,0, .3);
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
   background: white;
 }
-.cart-close-btn{
+
+.cart-close-btn {
   width: 30px;
   height: 30px;
   font-size: 20px;
@@ -168,10 +186,11 @@ button {
   right: 0;
 }
 
-.cart-close-btn:hover{
+.cart-close-btn:hover {
   background-color: rgb(255, 63, 63);
   color: white;
 }
+
 .cart-prods {
   padding-bottom: 20px;
   border-bottom: 5px solid silver;
@@ -184,9 +203,11 @@ button {
   justify-content: flex-start;
   padding: 10px;
 }
-.cart-prod > * {
+
+.cart-prod>* {
   margin-right: 10px;
 }
+
 .cart-prod:nth-child(odd) {
   background: #f8f8f8;
 }
@@ -195,6 +216,7 @@ button {
   font-size: 12px;
   font-weight: bold;
 }
+
 .cart-prod-title {
   max-width: 200px;
   max-height: 35px;
@@ -208,13 +230,16 @@ button {
   align-items: center;
   padding: 0;
 }
+
 .cart-prod-qty-spinner {
   padding: 10px;
   cursor: pointer;
 }
+
 .cart-prod-qty-spinner:hover {
   color: green;
 }
+
 /* .spinner-plus {}
 .spinner-minus {} */
 
@@ -225,7 +250,8 @@ button {
   background: transparent;
   border: 1px solid silver;
 }
-.cart-prod-qty input::-webkit-outer-spin-button, 
+
+.cart-prod-qty input::-webkit-outer-spin-button,
 .cart-prod-qty input::-webkit-inner-spin-button {
   display: none;
 }
@@ -234,11 +260,13 @@ button {
   content: "x";
   margin-left: 10px;
 }
+
 /* .cart-prod-price {} */
 .cart-prod-price::after {
   content: "=";
   margin-left: 10px;
 }
+
 .cart-prod-sum {
   margin-right: 0;
 }
@@ -251,6 +279,7 @@ button {
   color: silver;
   margin-left: 10px;
 }
+
 .cart-prod-del:hover {
   color: tomato;
   cursor: pointer;
@@ -262,6 +291,7 @@ button {
   align-items: flex-end;
   font-weight: bold;
 }
+
 /* .cart-total span {} */
 .cart-total span:first-child {
   margin-right: 10px;
@@ -269,30 +299,78 @@ button {
 
 /* .cart-total-value {}; */
 
+/* modal-window */
+.modal-window {
+  position: fixed;
+  z-index: 1000;
+  
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  padding: 50px;
+  box-shadow: 5px 5px 15px rgba(0,0,0, .3);
+  background: white;
+}
+.modal-window-content *{
+  border: 1px solid silver;
+  padding: 5px;
+}
+ .modal-window-close-btn{
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  cursor: pointer;
+}
 /* -----add-product-block----- */
-.add-item{
-  border: none;cursor: pointer;
-}
-.add-item img{
+.add-item {
+  border: none;
+  cursor: pointer;
   width: 50px;
+  height: 50px;
+  padding: 0;
 }
-.add-product-block{
+
+.add-item img {
+  width: 50px;
+  height: 50px;
+}
+
+.add-product-block {
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
 
   background: white;
-  box-shadow: 5px 5px 15px rgba(0,0,0, .3);
-  width:200px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
+  width: 200px;
 
   padding: 10px;
 }
-.add-product-block label{
+
+.add-product-block label {
   border: none;
   padding: 0;
   margin: 5px;
 }
-.add-product-block input{
+
+.add-product-block input {
   border: 1px solid silver;
+}
+.add-product-close-btn{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add-product-close-btn:hover{
+  background-color: red;
+  color: white;
 }
