@@ -63,7 +63,7 @@ button {
   border: none;
   padding: 0;
 }
- i::before{
+.header i::before{
   font-size: 30px;
   color: white;
 }

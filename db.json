@@ -43,20 +43,17 @@
       "price": 1000
     },
     {
-      "title": "product7",
+      "title": "product9",
       "category": "monitors",
-      "price": "600",
-      "img": "prod2.webp",
+      "price": 600,
+      "img": "",
       "id": 7
     }
   ],
-  
   "cart": {
-    "3": 3,
-    "4": 13,
-    "8": 6
+    "3": 1,
+    "4": 1
   },
-
   "users": [
     {
       "login": "Alex",

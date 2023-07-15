@@ -7,37 +7,35 @@ const urls = {
   products: 'http://localhost:3000/products',
   cart: 'http://localhost:3000/cart',
   users: 'http://localhost:3000/users'
-}
+};
 const addItemBtn = doc.querySelector('.add-item');
 
 let products = [];
 let user = '';
 
 // queries
-//get, post...
+// get, post...
 fetch(urls.products)
   .then(res => res.json())
   .then(data => {
     products = data;
-
-    renderProducts(products, productsSelector)
+    renderProducts(products, productsSelector);
   });
 
 fetch(urls.cart)
   .then(res => res.json())
   .then(data => {
     cart = data;
-
     cartBtn.dataset.count = getCartObjCount(products, cart);
   });
-
 
 renderProducts(products, productsSelector);
 renderLogInIcon('.login-container');
 
 cartBtn.dataset.count = getCartObjCount(products, cart);
 
-cartBtn.onclick = function () {
+cartBtn.onclick = function (e) {
+  e.preventDefault();
   if (isElementPresent(cartElem)) {
     removeElement(cartElem);
   } else {
@@ -45,16 +43,14 @@ cartBtn.onclick = function () {
       .then(res => res.json())
       .then(data => {
         cart = data;
-
         cartBtn.dataset.count = getCartObjCount(products, cart);
         renderCart(products, cart, 'body');
       });
   }
-}
-
+};
 
 function findElement(selector) {
-  return document.querySelector(selector);
+  return doc.querySelector(selector);
 }
 function isElementPresent(selector) {
   return !!findElement(selector);
@@ -102,7 +98,7 @@ function renderProduct(prodObj, insertSelector) {
   productPrice.innerHTML = price;
 
   addCart.className = 'add-cart';
-  addCart.innerHTML = 'Add cart'
+  addCart.innerHTML = 'Add cart';
   productPriceBlock.append(productPrice, addCart);
 
   productCategory.className = 'product-category';
@@ -143,8 +139,8 @@ function renderCart(dataArr, cartProdsObj, insertSelector) {
 
   cart.className = 'cart';
 
-  cartCloseBtn.className = 'cart-close-btn'
-  cartCloseBtn.innerText = 'X'
+  cartCloseBtn.className = 'cart-close-btn';
+  cartCloseBtn.innerText = 'X';
 
   cartTitle.className = 'cart-title';
   cartTitle.innerText = 'Cart';
@@ -159,13 +155,13 @@ function renderCart(dataArr, cartProdsObj, insertSelector) {
 
   cartCloseBtn.onclick = function () {
     removeElement(cartElem);
-  }
+  };
 }
 
 function renderCartProds(dataArr, cartProdsObj, insertSelector) {
   let count = 1;
 
-  for (id in cartProdsObj) {
+  for (let id in cartProdsObj) {
     const qty = cartProdsObj[id];
     const prod = dataArr.find(item => item.id == id);
 
@@ -174,7 +170,13 @@ function renderCartProds(dataArr, cartProdsObj, insertSelector) {
   }
 }
 
-function renderCartProd(count, prodObj, cartProdQty, insertSelector, cartProdsObj) {
+function renderCartProd(
+  count,
+  prodObj,
+  cartProdQty,
+  insertSelector,
+  cartProdsObj
+) {
   const parentEl = doc.querySelector(insertSelector);
   if (!parentEl) {
     console.error(`[${insertSelector}]: Parent element not found !!!`);
@@ -185,12 +187,10 @@ function renderCartProd(count, prodObj, cartProdQty, insertSelector, cartProdsOb
     product = doc.createElement('li'),
     productNumber = doc.createElement('span'),
     productTitle = doc.createElement('h4'),
-
     productQty = doc.createElement('label'),
     productQtySpinerPlus = doc.createElement('span'),
     productQtyInput = doc.createElement('input'),
     productQtySpinerMinus = doc.createElement('span'),
-
     productPrice = doc.createElement('span'),
     productSum = doc.createElement('span'),
     pruductDel = doc.createElement('button');
@@ -209,7 +209,7 @@ function renderCartProd(count, prodObj, cartProdQty, insertSelector, cartProdsOb
 
   productQty.className = 'cart-prod-qty';
   productQtySpinerPlus.className = 'cart-prod-qty-spinner spinner-plus';
-  productQtySpinerPlus.innerHTML = '<i class="fa-solid fa-plus"></i>'
+  productQtySpinerPlus.innerHTML = '<i class="fa-solid fa-plus"></i>';
   productQtyInput.value = cartProdQty;
   productQtySpinerMinus.className = 'cart-prod-qty-spinner spinner-minus';
   productQtySpinerMinus.innerHTML = '<i class="fa-solid fa-minus"></i>';
@@ -243,15 +243,15 @@ function renderCartProd(count, prodObj, cartProdQty, insertSelector, cartProdsOb
   productQtySpinerPlus.onclick = function () {
     addNItemToCart(cartProdsObj, prodObj);
     renderCart(products, cart, 'body');
-  }
+  };
   productQtySpinerMinus.onclick = function () {
     minNItemToCart(cartProdsObj, prodObj);
     renderCart(products, cart, 'body');
-  }
+  };
   pruductDel.onclick = function () {
-    deleteCartProdObj(cartProdsObj, prodObj)
+    deleteCartProdObj(cartProdsObj, prodObj);
     renderCart(products, cart, 'body');
-  }
+  };
 }
 
 function renderCartTotal(totalSum, insertSelector) {
@@ -301,7 +301,7 @@ function minNItemToCart(cartProdsObj, prodObj) {
   if (productId in cartProdsObj) {
     cartProdsObj[productId]--;
     if (cartProdsObj[productId] <= 0) {
-      deleteCartProdObj(cartProdsObj, prodObj)
+      deleteCartProdObj(cartProdsObj, prodObj);
     }
   }
   cartBtn.dataset.count = getCartObjCount(products, cart);
@@ -318,8 +318,7 @@ function removeElement(element) {
 function renderAddProduct(insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  const
-    addProduct = doc.createElement('div'),
+  const addProduct = doc.createElement('div'),
     addProductTitle = doc.createElement('h2'),
     addProductForm = doc.createElement('form'),
     addProductFormTitleLabel = doc.createElement('label'),
@@ -334,17 +333,17 @@ function renderAddProduct(insertSelector) {
     addProductCloseBtn = doc.createElement('button');
 
   addProduct.className = 'add-product-block';
-  addProductForm.className = 'add-produc';
+  addProductForm.className = 'add-product';
   addProductFormTitleInput.className = 'add-product-title';
   addProductFormCategoryInput.className = 'add-product-category';
-  addProductFormPriceInput.className = 'add-product-img';
-  addProductFormImgInput.className = 'add-product-price';
+  addProductFormPriceInput.className = 'add-product-price';
+  addProductFormImgInput.className = 'add-product-img';
   addProductFormBtn.className = 'add-product-btn';
-  addProductCloseBtn.className = 'add-product-close-btn'
+  addProductCloseBtn.className = 'add-product-close-btn';
 
   addProductTitle.innerText = 'Add Product';
   addProductFormTitleLabel.innerText = 'Title:';
-  addProductFormCategoryLabel.innerText = 'Category:'
+  addProductFormCategoryLabel.innerText = 'Category:';
   addProductFormPriceLabel.innerText = 'Price:';
   addProductFormImgLabel.innerText = 'Img:';
   addProductFormBtn.innerText = 'Add';
@@ -368,18 +367,19 @@ function renderAddProduct(insertSelector) {
   addProductFormBtn.onclick = function (e) {
     e.preventDefault();
 
-    const newId = products[products.length - 1].id + 1;
-    const title = addProductFormTitleInput.value;
-    const category = addProductFormCategoryInput.value;
-    const price = addProductFormPriceInput.value;
-    const img = addProductFormImgInput.value;
+    const
+      newId = products[products.length - 1].id + 1,
+      title = addProductFormTitleInput.value,
+      category = addProductFormCategoryInput.value,
+      price = addProductFormPriceInput.value,
+      img = addProductFormImgInput.value;
 
     console.log(newId, title, category, price, img);
 
     const newProduct = {
       title: title,
       category: category,
-      price: price,
+      price: Number(price),
       img: img
     };
 
@@ -397,16 +397,16 @@ function renderAddProduct(insertSelector) {
         products.push(data);
         renderProduct(data, productsSelector);
       });
-  }
+  };
 
   addProductCloseBtn.onclick = function (e) {
     e.preventDefault();
 
-    const element = '.add-product-block'
+    const element = '.add-product-block';
     removeElement(element);
-
-  }
+  };
 }
+
 function renderModalWindow(insertSelector, renderClassName, title) {
   const parentEl = checkPresentElements(insertSelector, renderClassName);
   if (!parentEl) {
@@ -444,6 +444,7 @@ function renderModalWindow(insertSelector, renderClassName, title) {
 
   return modalWindowContent;
 }
+
 function renderLoginForm(insertSelector, renderClassName) {
   const parentEl = checkPresentElements(insertSelector, renderClassName);
   if (!parentEl) {
@@ -494,7 +495,7 @@ function renderLoginForm(insertSelector, renderClassName) {
           }
         }
         if (user__ == '') {
-          alert('Login or password is incorrect!')
+          alert('Login or password is incorrect!');
         } else {
           removeElement('.' + renderClassName);
           renderAddItemBtn('.user-action');
@@ -503,31 +504,24 @@ function renderLoginForm(insertSelector, renderClassName) {
         }
 
         renderLogInIcon('.login-container');
-
       });
-  }
+  };
 }
+
 function renderLogInIcon(insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  const
-    btnLogin = doc.createElement('button'),
-    icon = doc.createElement('i');
+  const btnLogin = doc.createElement('button');
+  const icon = doc.createElement('i');
 
-  let dataTitle =
-    user == '' ?
-      'login' :
-      'logout';
+  let dataTitle = user == '' ? 'login' : 'logout';
 
-  icon.className =
-    user == '' ?
-      'fa-solid fa-right-to-bracket' :
-      'fa-solid fa-right-from-bracket';
+  icon.className = user == '' ? 'fa-solid fa-right-to-bracket' : 'fa-solid fa-right-from-bracket';
 
   btnLogin.className = 'login button-icon';
   btnLogin.dataset.title = dataTitle;
 
-  const btn = '.login.button-icon'
+  const btn = '.login.button-icon';
   if (isElementPresent(btn)) {
     removeElement(btn);
   }
@@ -547,7 +541,7 @@ function renderLogInIcon(insertSelector) {
         user = '';
       }
     }
-  }
+  };
 
   parentEl.append(btnLogin);
   btnLogin.append(icon);
@@ -556,9 +550,8 @@ function renderLogInIcon(insertSelector) {
 function renderAddItemBtn(insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
-  const
-    addItemBtn = doc.createElement('button'),
-    addItemBtnIcon = doc.createElement('i');
+  const addItemBtn = doc.createElement('button');
+  const addItemBtnIcon = doc.createElement('i');
 
   addItemBtn.className = 'add-item';
   addItemBtnIcon.className = 'fa-solid fa-calendar-plus';
@@ -566,15 +559,14 @@ function renderAddItemBtn(insertSelector) {
   parentEl.prepend(addItemBtn);
   addItemBtn.append(addItemBtnIcon);
 
-
   addItemBtn.onclick = function () {
-    const el = '.add-product-block'
+    const el = '.add-product-block';
     if (isElementPresent(el)) {
       removeElement(el);
     } else {
       renderAddProduct('body');
     }
-  }
+  };
 }
 
 function checkPresentElements(insertSelector, renderClassName) {
@@ -607,9 +599,9 @@ function addCartHandler() {
       }
 
       fetch(urls.cart, {
-        method: 'post',
+        method: 'POST',
         headers: {
-          "Content-type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(cart)
       });
