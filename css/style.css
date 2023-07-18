@@ -374,3 +374,60 @@ button {
   background-color: red;
   color: white;
 }
+
+/* ----valid-error-addproduct-block------ */
+.valid-error-addproduct-block{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 300px;
+  z-index: 999999;
+
+  padding: 50px;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
+  background: white;
+
+  color: black;
+}
+.valid-error-addproduct-block-close-btn{
+  position: absolute;
+  top: 0;
+  right: 0;
+
+}
+
+/* pagination */
+
+.pagination{
+font-size: 20;
+font-weight: bold;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.page-manage{
+  padding: 10px;
+  cursor: pointer;
+}
+/* .page-prev{}
+.page-next{} */
+.pages{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.page{
+  padding: 10px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.page:hover{
+  border: 2px solid orange;
+}
+.page.active{
+  background-color: rgb(255, 196, 0);
+  color: white;
+}

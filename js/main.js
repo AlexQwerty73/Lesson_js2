@@ -9,9 +9,12 @@ const urls = {
   users: 'http://localhost:3000/users'
 };
 const addItemBtn = doc.querySelector('.add-item');
+const productPerPageSelect = doc.querySelector('.productPerPage select');
 
 let products = [];
 let user = '';
+
+let activePaginationPage = 1;
 
 // queries
 // get, post...
@@ -20,6 +23,7 @@ fetch(urls.products)
   .then(data => {
     products = data;
     renderProducts(products, productsSelector);
+    renderPagination(products, productPerPageSelect.value, '.pagination');
   });
 
 fetch(urls.cart)
@@ -48,7 +52,10 @@ cartBtn.onclick = function (e) {
       });
   }
 };
-
+productPerPageSelect.onchange = function () {
+  const prodPerPage = productPerPageSelect.value;
+  renderPagination(products, prodPerPage, '.pagination')
+}
 function findElement(selector) {
   return doc.querySelector(selector);
 }
@@ -347,6 +354,7 @@ function renderAddProduct(insertSelector) {
   addProductFormPriceLabel.innerText = 'Price:';
   addProductFormImgLabel.innerText = 'Img:';
   addProductFormBtn.innerText = 'Add';
+  addProductFormBtn.type = "button";
   addProductCloseBtn.innerText = 'X';
 
   parentEl.append(addProduct);
@@ -374,7 +382,7 @@ function renderAddProduct(insertSelector) {
       price = addProductFormPriceInput.value,
       img = addProductFormImgInput.value;
 
-    console.log(newId, title, category, price, img);
+
 
     const newProduct = {
       title: title,
@@ -382,6 +390,33 @@ function renderAddProduct(insertSelector) {
       price: Number(price),
       img: img
     };
+
+    for (let item in newProduct) {
+      if (newProduct[item] == '' || newProduct[item] == undefined || newProduct[item] == null) {
+        const body = doc.querySelector('.header')
+
+        const
+          validErrorBlock = doc.createElement('div'),
+          validErrorBlockText = doc.createElement('p'),
+          validErrorBlockCloseBtn = doc.createElement('button');
+
+        validErrorBlock.className = 'valid-error-addproduct-block';
+        validErrorBlockText.className = 'valid-error-addproduct-block-text';
+        validErrorBlockCloseBtn.className = 'valid-error-addproduct-block-close-btn';
+
+        validErrorBlockText.innerText = 'Ви не заповнили всі інпути!';
+        validErrorBlockCloseBtn.innerText = 'X';
+
+        body.append(validErrorBlock);
+        validErrorBlock.append(validErrorBlockText, validErrorBlockCloseBtn)
+
+        validErrorBlockCloseBtn.onclick = function () {
+          removeElement('.valid-error-addproduct-block');
+        }
+
+        return false;
+      }
+    }
 
     fetch(urls.products, {
       method: 'POST',
@@ -567,6 +602,44 @@ function renderAddItemBtn(insertSelector) {
       renderAddProduct('body');
     }
   };
+}
+
+function renderPagination(dataArr, productPerPage, insertSelector) {
+  const parentEl = doc.querySelector(insertSelector);
+  // const list = parentEl.children[1];
+
+  if (Number(productPerPage) != productPerPage) {
+    productPerPage = dataArr.length;
+  }
+  const pagesCount = Math.round(dataArr.length / productPerPage);
+
+  console.log('pages: ' + pagesCount);
+
+  const
+    arrowLeftBlock = doc.createElement('div'),
+    arrowLeftBlockIcon = doc.createElement('i'),
+    arrowRightBlock = doc.createElement('div'),
+    arrowRightBlockIcon = doc.createElement('i'),
+    paginationList = doc.createElement('ul');
+
+  arrowLeftBlock.className = 'page page-prev';
+  arrowLeftBlockIcon.className = 'fa-solid fa-left-long';
+  arrowRightBlock.className = 'page page-next';
+  arrowRightBlockIcon.className = 'fa-solid fa-right-long';
+  paginationList.className = 'pages';
+
+  parentEl.innerHTML ='';
+
+  parentEl.append(arrowLeftBlock,paginationList,arrowRightBlock);
+  arrowRightBlock.append(arrowRightBlockIcon);
+  arrowLeftBlock.append(arrowLeftBlockIcon);
+
+  for(let i = 1; i <= pagesCount; i++){
+    const page = doc.createElement('li');
+    page.className = `page ${i == activePaginationPage? 'active': ''}`;
+    page.innerText = i;
+    paginationList.append(page);
+  }
 }
 
 function checkPresentElements(insertSelector, renderClassName) {
