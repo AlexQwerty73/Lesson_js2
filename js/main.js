@@ -1,5 +1,6 @@
 const doc = document;
 const productsSelector = '.products';
+const productElement = doc.querySelector(productsSelector);
 let cartBtn = doc.querySelector('.mini-cart');
 const cartElem = '.cart';
 let cart = {};
@@ -22,8 +23,9 @@ fetch(urls.products)
   .then(res => res.json())
   .then(data => {
     products = data;
-    renderProducts(products, productsSelector);
+    // renderProducts(products, productsSelector);
     renderPagination(products, productPerPageSelect.value, '.pagination');
+    renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
   });
 
 fetch(urls.cart)
@@ -33,7 +35,7 @@ fetch(urls.cart)
     cartBtn.dataset.count = getCartObjCount(products, cart);
   });
 
-renderProducts(products, productsSelector);
+// renderProducts(products, productsSelector);
 renderLogInIcon('.login-container');
 
 cartBtn.dataset.count = getCartObjCount(products, cart);
@@ -54,11 +56,22 @@ cartBtn.onclick = function (e) {
 };
 productPerPageSelect.onchange = function () {
   const prodPerPage = productPerPageSelect.value;
+  activePaginationPage = 1;
   renderPagination(products, prodPerPage, '.pagination');
 
-  const productsContainer = doc.querySelector('.products');
-  productsContainer.innerHTML = '';
+  productElement.innerHTML = '';
+  renderProducts(getNewProdWPag(activePaginationPage, prodPerPage, products), productsSelector);
+}
 
+function getNewProdWPag(activePagPage, prodPerPageVal, dataArr) {
+  let pppvn = Number(prodPerPageVal);
+
+  if (pppvn != prodPerPageVal) {
+    pppvn = dataArr.length;
+  }
+
+  const num = (activePagPage - 1) * pppvn;
+  return dataArr.slice(num, num + pppvn);
 }
 function findElement(selector) {
   return doc.querySelector(selector);
@@ -612,7 +625,7 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
 
   if (Number(productPerPage) != productPerPage) {
-    productPerPage = dataArr.length;
+    productPerPage = dataArr.length - 1;
   }
   const pagesCount = Math.round(dataArr.length / productPerPage);
 
@@ -659,6 +672,10 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
           arrowRightBlock.className += ' silver-text' :
           arrowRightBlock.classList.contains('silver-text') ?
             arrowRightBlock.classList.remove('silver-text') : null;
+
+        activePaginationPage = Number(this.innerText);
+        productElement.innerHTML = '';
+        renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
       }
     }
 
@@ -676,6 +693,9 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
             if (Number(li.innerText) == pagesCount - 1) {
               this.className += ' silver-text';
             }
+            activePaginationPage = Number(li.innerText) + 1;
+            productElement.innerHTML = '';
+            renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
           }
           break;
         }
@@ -692,10 +712,12 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
           if (!(Number(li.innerText) < 2)) {
             li.className = 'page';
             ul.children[Number(li.innerText) - 2].className += ' active';
-
             if (Number(li.innerText) <= 2) {
               this.className += ' silver-text';
             }
+            activePaginationPage = Number(li.innerText) - 1;
+            productElement.innerHTML = '';
+            renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
           }
           break;
         }
