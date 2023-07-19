@@ -431,3 +431,7 @@ align-items: center;
   background-color: rgb(255, 196, 0);
   color: white;
 }
+
+.silver-text{
+  color: silver;
+}

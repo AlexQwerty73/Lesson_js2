@@ -54,7 +54,11 @@ cartBtn.onclick = function (e) {
 };
 productPerPageSelect.onchange = function () {
   const prodPerPage = productPerPageSelect.value;
-  renderPagination(products, prodPerPage, '.pagination')
+  renderPagination(products, prodPerPage, '.pagination');
+
+  const productsContainer = doc.querySelector('.products');
+  productsContainer.innerHTML = '';
+
 }
 function findElement(selector) {
   return doc.querySelector(selector);
@@ -606,7 +610,6 @@ function renderAddItemBtn(insertSelector) {
 
 function renderPagination(dataArr, productPerPage, insertSelector) {
   const parentEl = doc.querySelector(insertSelector);
-  // const list = parentEl.children[1];
 
   if (Number(productPerPage) != productPerPage) {
     productPerPage = dataArr.length;
@@ -622,23 +625,82 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
     arrowRightBlockIcon = doc.createElement('i'),
     paginationList = doc.createElement('ul');
 
-  arrowLeftBlock.className = 'page page-prev';
+  arrowLeftBlock.className = 'page page-prev silver-text';
   arrowLeftBlockIcon.className = 'fa-solid fa-left-long';
   arrowRightBlock.className = 'page page-next';
   arrowRightBlockIcon.className = 'fa-solid fa-right-long';
   paginationList.className = 'pages';
 
-  parentEl.innerHTML ='';
+  parentEl.innerHTML = '';
 
-  parentEl.append(arrowLeftBlock,paginationList,arrowRightBlock);
+  parentEl.append(arrowLeftBlock, paginationList, arrowRightBlock);
   arrowRightBlock.append(arrowRightBlockIcon);
   arrowLeftBlock.append(arrowLeftBlockIcon);
 
-  for(let i = 1; i <= pagesCount; i++){
+  for (let i = 1; i <= pagesCount; i++) {
     const page = doc.createElement('li');
-    page.className = `page ${i == activePaginationPage? 'active': ''}`;
+    page.className = `page${i == activePaginationPage ? ' active' : ''}`;
     page.innerText = i;
     paginationList.append(page);
+
+    page.onclick = function () {
+      if (!this.classList.contains('active')) {
+        for (let li of this.parentNode.children) {
+          li.className = 'page';
+        }
+        this.className += ' active';
+
+        Number(this.innerText) == 1 ?
+          arrowLeftBlock.className += ' silver-text' :
+          arrowLeftBlock.classList.contains('silver-text') ?
+            arrowLeftBlock.classList.remove('silver-text') : null;
+
+        Number(this.innerText) == pagesCount ?
+          arrowRightBlock.className += ' silver-text' :
+          arrowRightBlock.classList.contains('silver-text') ?
+            arrowRightBlock.classList.remove('silver-text') : null;
+      }
+    }
+
+    arrowRightBlock.onclick = function () {
+      for (let li of page.parentNode.children) {
+        if (li.classList.contains('active') && !arrowRightBlock.classList.contains('silver-text')) {
+          arrowLeftBlock.classList.contains('silver-text') ?
+            arrowLeftBlock.classList.remove('silver-text') : null;
+
+          const ul = li.parentElement;
+
+          if (!(Number(li.innerText) > pagesCount - 1)) {
+            li.className = 'page';
+            ul.children[Number(li.innerText)].className += ' active';
+            if (Number(li.innerText) == pagesCount - 1) {
+              this.className += ' silver-text';
+            }
+          }
+          break;
+        }
+      }
+    }
+    arrowLeftBlock.onclick = function () {
+      for (let li of page.parentNode.children) {
+        if (li.classList.contains('active') && !arrowLeftBlock.classList.contains('silver-text')) {
+          arrowRightBlock.classList.contains('silver-text') ?
+            arrowRightBlock.classList.remove('silver-text') : null;
+
+          const ul = li.parentElement;
+
+          if (!(Number(li.innerText) < 2)) {
+            li.className = 'page';
+            ul.children[Number(li.innerText) - 2].className += ' active';
+
+            if (Number(li.innerText) <= 2) {
+              this.className += ' silver-text';
+            }
+          }
+          break;
+        }
+      }
+    }
   }
 }
 
