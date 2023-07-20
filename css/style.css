@@ -106,7 +106,7 @@ button {
   flex-wrap: wrap;
 }
 
-.product {
+.product.pr {
   border: 2px solid silver;
   padding: 10px;
   width: 200px;
@@ -323,7 +323,8 @@ button {
 
   cursor: pointer;
 }
-/* -----add-product-block----- */
+/* -----
+-block----- */
 .add-item {
   border: none;
   cursor: pointer;
@@ -345,7 +346,7 @@ button {
 
   background: white;
   box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
-  width: 200px;
+  width: 300px;
 
   padding: 10px;
 }
@@ -434,4 +435,42 @@ align-items: center;
 
 .silver-text{
   color: silver;
+}
+
+
+/* bigBlockProdInfo -------------*/
+.bigBlockProdInfo.product{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: white;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
+
+  padding: 20px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bigBlockProdInfo img{
+  max-width: 200px;
+}
+.bigBlockProdInfo *{
+  padding: 5px;
+}
+.bigBlockProdInfo .bigBlockInfoContainer{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+  flex-direction: column;
+}
+.bigBlockCloseBtn{
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
 }

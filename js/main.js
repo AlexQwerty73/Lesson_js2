@@ -106,7 +106,7 @@ function renderProduct(prodObj, insertSelector) {
   const { id, title, category, img, price } = prodObj;
   const imgPath = `./img/products/${category}/${img}`;
 
-  product.className = 'product';
+  product.className = 'product pr';
   product.dataset.id = id;
 
   productImgWrap.className = 'product-img';
@@ -137,7 +137,54 @@ function renderProduct(prodObj, insertSelector) {
 
   parentEl.append(product);
 
-  addCart.onclick = addCartHandler;
+  productImg.onclick = function () {
+    if (isElementPresent('.bigBlockProdInfo')) {
+      removeElement('.bigBlockProdInfo')
+    }
+    const body = doc.querySelector('body');
+    const
+      bigBlock = doc.createElement('div'),
+      bigBlockImg = doc.createElement('img'),
+      bigBlockInfoContainer = doc.createElement('div'),
+      bigBlockTitle = doc.createElement('h3'),
+      bigBlockPriceBlock = doc.createElement('div'),
+      bigBlockPrice = doc.createElement('span'),
+      bigBlockaddCart = addCart,
+      bigBlockCategory = doc.createElement('span'),
+      bigBlockCloseBtn = doc.createElement('button');
+
+    bigBlock.className = 'bigBlockProdInfo product';
+    bigBlockImg.className = 'bigBlockImg';
+    bigBlockInfoContainer.className = 'bigBlockInfoContainer';
+    bigBlockTitle.className = 'bigBlockTitle';
+    bigBlockPriceBlock.className = 'bigBlockPriceBlock';
+    bigBlockPrice.className = 'bigBlockPrice';
+    bigBlockaddCart.className = 'bigBlockaddCart';
+    bigBlockCategory.className = 'bigBlockCategory';
+    bigBlockCloseBtn.className = 'bigBlockCloseBtn';
+
+    bigBlock.dataset.id = id;
+
+    bigBlockImg.src = imgPath;
+    bigBlockImg.alt = img;
+
+    bigBlockTitle.innerText = title;
+    bigBlockPrice.innerText = price;
+    bigBlockCategory.innerText = category;
+    bigBlockCloseBtn.innerText = 'X'
+
+    body.append(bigBlock);
+    bigBlock.append(bigBlockImg, bigBlockInfoContainer)
+    bigBlockInfoContainer.append(bigBlockTitle, bigBlockCategory, bigBlockPriceBlock);
+    bigBlockPriceBlock.append(bigBlockPrice, bigBlockaddCart, bigBlockCloseBtn);
+
+    bigBlockaddCart.onclick = addCartHandler;
+
+    bigBlockCloseBtn.onclick = function () {
+      removeElement('.bigBlockProdInfo');
+    }
+  }
+  addCart.addEventListener('click', addCartHandler);
 }
 
 function renderCart(dataArr, cartProdsObj, insertSelector) {
@@ -348,7 +395,7 @@ function renderAddProduct(insertSelector) {
     addProductFormTitleLabel = doc.createElement('label'),
     addProductFormTitleInput = doc.createElement('input'),
     addProductFormCategoryLabel = doc.createElement('label'),
-    addProductFormCategoryInput = doc.createElement('input'),
+    addProductFormCategorySelect = doc.createElement('select'),
     addProductFormPriceLabel = doc.createElement('label'),
     addProductFormPriceInput = doc.createElement('input'),
     addProductFormImgInput = doc.createElement('input'),
@@ -359,7 +406,7 @@ function renderAddProduct(insertSelector) {
   addProduct.className = 'add-product-block';
   addProductForm.className = 'add-product';
   addProductFormTitleInput.className = 'add-product-title';
-  addProductFormCategoryInput.className = 'add-product-category';
+  addProductFormCategorySelect.className = 'add-product-category';
   addProductFormPriceInput.className = 'add-product-price';
   addProductFormImgInput.className = 'add-product-img';
   addProductFormBtn.className = 'add-product-btn';
@@ -380,7 +427,6 @@ function renderAddProduct(insertSelector) {
     addProductFormTitleLabel,
     addProductFormTitleInput,
     addProductFormCategoryLabel,
-    addProductFormCategoryInput,
     addProductFormPriceLabel,
     addProductFormPriceInput,
     addProductFormImgLabel,
@@ -389,17 +435,32 @@ function renderAddProduct(insertSelector) {
     addProductCloseBtn
   );
 
+  addProductFormCategoryLabel.append(addProductFormCategorySelect);
+
+  const uniqueCategoriesSet = new Set(products.map(product => product.category));
+  const uniqueCategories = [...uniqueCategoriesSet];
+
+  const optionNone = doc.createElement('option');
+  optionNone.innerText = 'none';
+  optionNone.value = 'none';
+  addProductFormCategorySelect.append(optionNone);
+
+  for (let category of uniqueCategories) {
+    const categoryOption = doc.createElement('option');
+    categoryOption.value = category;
+    categoryOption.innerText = category;
+    addProductFormCategorySelect.append(categoryOption);
+  }
+
   addProductFormBtn.onclick = function (e) {
     e.preventDefault();
 
     const
       newId = products[products.length - 1].id + 1,
       title = addProductFormTitleInput.value,
-      category = addProductFormCategoryInput.value,
+      category = addProductFormCategorySelect.value,
       price = addProductFormPriceInput.value,
       img = addProductFormImgInput.value;
-
-
 
     const newProduct = {
       title: title,
@@ -409,7 +470,7 @@ function renderAddProduct(insertSelector) {
     };
 
     for (let item in newProduct) {
-      if (newProduct[item] == '' || newProduct[item] == undefined || newProduct[item] == null) {
+      if (newProduct[item] == '' || newProduct[item] == undefined || newProduct[item] == null || newProduct[item] == 'none') {
         const body = doc.querySelector('.header')
 
         const
@@ -654,6 +715,7 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
     const page = doc.createElement('li');
     page.className = `page${i == activePaginationPage ? ' active' : ''}`;
     page.innerText = i;
+    page.dataset.count = i;
     paginationList.append(page);
 
     page.onclick = function () {
@@ -663,17 +725,17 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
         }
         this.className += ' active';
 
-        Number(this.innerText) == 1 ?
+        Number(this.dataset.count) == 1 ?
           arrowLeftBlock.className += ' silver-text' :
           arrowLeftBlock.classList.contains('silver-text') ?
             arrowLeftBlock.classList.remove('silver-text') : null;
 
-        Number(this.innerText) == pagesCount ?
+        Number(this.dataset.count) == pagesCount ?
           arrowRightBlock.className += ' silver-text' :
           arrowRightBlock.classList.contains('silver-text') ?
             arrowRightBlock.classList.remove('silver-text') : null;
 
-        activePaginationPage = Number(this.innerText);
+        activePaginationPage = Number(this.dataset.count);
         productElement.innerHTML = '';
         renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
       }
@@ -687,13 +749,13 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
 
           const ul = li.parentElement;
 
-          if (!(Number(li.innerText) > pagesCount - 1)) {
+          if (!(Number(li.dataset.count) > pagesCount - 1)) {
             li.className = 'page';
-            ul.children[Number(li.innerText)].className += ' active';
-            if (Number(li.innerText) == pagesCount - 1) {
+            ul.children[Number(li.dataset.count)].className += ' active';
+            if (Number(li.dataset.count) == pagesCount - 1) {
               this.className += ' silver-text';
             }
-            activePaginationPage = Number(li.innerText) + 1;
+            activePaginationPage = Number(li.dataset.count) + 1;
             productElement.innerHTML = '';
             renderProducts(getNewProdWPag(activePaginationPage, productPerPageSelect.value, products), productsSelector);
           }
@@ -709,10 +771,10 @@ function renderPagination(dataArr, productPerPage, insertSelector) {
 
           const ul = li.parentElement;
 
-          if (!(Number(li.innerText) < 2)) {
+          if (!(Number(li.dataset.count) < 2)) {
             li.className = 'page';
-            ul.children[Number(li.innerText) - 2].className += ' active';
-            if (Number(li.innerText) <= 2) {
+            ul.children[Number(li.dataset.count) - 2].className += ' active';
+            if (Number(li.dataset.count) <= 2) {
               this.className += ' silver-text';
             }
             activePaginationPage = Number(li.innerText) - 1;
@@ -740,7 +802,9 @@ function checkPresentElements(insertSelector, renderClassName) {
   return el;
 }
 
-function addCartHandler() {
+function addCartHandler(e) {
+  e.preventDefault();
+
   const id = this.closest('.product').dataset.id;
 
   fetch(urls.cart)
