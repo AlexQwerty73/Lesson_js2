@@ -419,6 +419,7 @@ function renderAddProduct(insertSelector) {
   addProductFormImgLabel.innerText = 'Img:';
   addProductFormBtn.innerText = 'Add';
   addProductFormBtn.type = "button";
+  addProductFormImgInput.type = 'file';
   addProductCloseBtn.innerText = 'X';
 
   parentEl.append(addProduct);
@@ -452,6 +453,12 @@ function renderAddProduct(insertSelector) {
     addProductFormCategorySelect.append(categoryOption);
   }
 
+  let imgName = '';
+  addProductFormImgInput.onchange = function(){
+    imgName = this.files[0].name
+    console.log(imgName);
+  }
+
   addProductFormBtn.onclick = function (e) {
     e.preventDefault();
 
@@ -460,7 +467,7 @@ function renderAddProduct(insertSelector) {
       title = addProductFormTitleInput.value,
       category = addProductFormCategorySelect.value,
       price = addProductFormPriceInput.value,
-      img = addProductFormImgInput.value;
+      img = imgName;
 
     const newProduct = {
       title: title,
@@ -470,7 +477,7 @@ function renderAddProduct(insertSelector) {
     };
 
     for (let item in newProduct) {
-      if (newProduct[item] == '' || newProduct[item] == undefined || newProduct[item] == null || newProduct[item] == 'none') {
+      if (newProduct[item] == '' || newProduct[item] == undefined || newProduct[item] == null || newProduct[item] == 'none' || !addProductFormImgInput.files[0]) {
         const body = doc.querySelector('.header')
 
         const
