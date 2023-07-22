@@ -474,3 +474,38 @@ align-items: center;
   align-items: center;
   padding: 10px;
 }
+
+/* editProdBlock------------------ */
+
+.editProdBlock{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); 
+
+  display: flex;
+  justify-content: center;
+  align-items:flex-start;
+  flex-direction: column;
+  padding: 10px;
+
+  background: white;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, .3);
+
+}
+.editProdBlock input{
+  border: 1px solid silver;
+}
+.editProdBlockCloseBtn{
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.editProdBlock *{
+  padding: 5px;
+  margin: 5px;
+}

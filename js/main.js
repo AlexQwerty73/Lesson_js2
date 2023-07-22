@@ -151,7 +151,8 @@ function renderProduct(prodObj, insertSelector) {
       bigBlockPrice = doc.createElement('span'),
       bigBlockaddCart = addCart,
       bigBlockCategory = doc.createElement('span'),
-      bigBlockCloseBtn = doc.createElement('button');
+      bigBlockCloseBtn = doc.createElement('button'),
+      bigBlockEditBtn = doc.createElement('button');
 
     bigBlock.className = 'bigBlockProdInfo product';
     bigBlockImg.className = 'bigBlockImg';
@@ -178,10 +179,96 @@ function renderProduct(prodObj, insertSelector) {
     bigBlockInfoContainer.append(bigBlockTitle, bigBlockCategory, bigBlockPriceBlock);
     bigBlockPriceBlock.append(bigBlockPrice, bigBlockaddCart, bigBlockCloseBtn);
 
+    if (user != '') {
+      bigBlockEditBtn.innerText = 'Edit';
+      bigBlockEditBtn.className = 'bigBlockEditBtn';
+      bigBlockPriceBlock.append(bigBlockEditBtn);
+    }
+
     bigBlockaddCart.onclick = addCartHandler;
 
     bigBlockCloseBtn.onclick = function () {
       removeElement('.bigBlockProdInfo');
+    }
+    bigBlockEditBtn.onclick = function () {
+      const
+        editProdBlock = doc.createElement('div'),
+        editProdBlockTitleLabel = doc.createElement('label'),
+        editProdBlockTitleInput = doc.createElement('input'),
+        editProdBlockPriceLabel = doc.createElement('label'),
+        editProdBlockPriceInput = doc.createElement('input'),
+        editProdBlockCategoryLabel = doc.createElement('label'),
+        editProdBlockCategorySelect = doc.createElement('select'),
+        editProdBlockImgLabel = doc.createElement('label'),
+        editProdBlockImgInput = doc.createElement('input'),
+        editProdBlockCloseBtn = doc.createElement('button'),
+        editProdBlockCSaveBtn = doc.createElement('button');
+
+      editProdBlock.className = 'editProdBlock';
+      editProdBlockCSaveBtn.className = 'editProdBlockCSaveBtn';
+      editProdBlockCloseBtn.className = 'editProdBlockCloseBtn';
+
+      editProdBlockTitleLabel.innerText = 'Title:';
+      editProdBlockTitleInput.value = title;
+      editProdBlockPriceLabel.innerText = 'Price:';
+      editProdBlockPriceInput.value = price;
+      editProdBlockCategoryLabel.innerText = 'Category:';
+      editProdBlockImgLabel.innerText = 'Img:';
+      editProdBlockCSaveBtn.innerText = 'Save';
+      editProdBlockCloseBtn.innerText = 'X';
+
+      // editProdBlockImgInput.files[0].name = imgPath;
+
+      editProdBlockImgInput.type = 'file';
+
+      body.append(editProdBlock);
+      editProdBlock.append(
+        editProdBlockTitleLabel,
+        editProdBlockPriceLabel,
+        editProdBlockCategoryLabel,
+        editProdBlockImgLabel,
+        editProdBlockCSaveBtn,
+        editProdBlockCloseBtn);
+
+      editProdBlockTitleLabel.append(editProdBlockTitleInput);
+      editProdBlockPriceLabel.append(editProdBlockPriceInput);
+      editProdBlockImgLabel.append(editProdBlockImgInput)
+      editProdBlockCategoryLabel.append(editProdBlockCategorySelect);
+
+      const uniqueCategoriesSet = new Set(products.map(product => product.category));
+      const uniqueCategories = [...uniqueCategoriesSet];
+
+      const optionNone = doc.createElement('option');
+      optionNone.innerText = 'none';
+      optionNone.value = 'none';
+      editProdBlockCategorySelect.append(optionNone);
+
+      for (let category of uniqueCategories) {
+        const categoryOption = doc.createElement('option');
+        categoryOption.value = category;
+        categoryOption.innerText = category;
+        editProdBlockCategorySelect.append(categoryOption);
+      }
+
+      editProdBlockCloseBtn.onclick = function () {
+        removeElement('.editProdBlock');
+      }
+      editProdBlockCSaveBtn.onclick = function () {
+        let editProduct = products[id - 1];
+
+        editProduct.title = editProdBlockTitleInput.value;
+        editProduct.category = editProdBlockCategorySelect.value;
+        editProduct.img = editProdBlockImgInput.files[0].name
+        editProduct.price = Number(editProdBlockPriceInput.value);
+
+        fetch(urls.products + `/${id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(editProduct)
+        });
+      }
     }
   }
   addCart.addEventListener('click', addCartHandler);
@@ -454,7 +541,7 @@ function renderAddProduct(insertSelector) {
   }
 
   let imgName = '';
-  addProductFormImgInput.onchange = function(){
+  addProductFormImgInput.onchange = function () {
     imgName = this.files[0].name
     console.log(imgName);
   }
