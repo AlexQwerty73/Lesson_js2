@@ -1,37 +1,16 @@
-const isSquare = n => Number.isInteger(Math.sqrt(n));
-// console.log(isSquare(81)); 
+const arr = [-2, 0, 3, 6, -24];
+const arr1 = [
+  {a: 1, b: 3},
+  {a: 11, b: 34}
+];
+Array.prototype.myForeach = myForeach
 
-const nameArr = ['Andrii', 'Alex', 'Nik']
-
-transformAndShow(nameArr, function (item) {
-  return (
-    `<div class="box-item">
-      <span>
-        ${item}
-      </span>
-    </div>`
-  );
+arr.myForeach((item) => {
+  console.log(item);
 });
 
-function transformAndShow(data, callback) {
-  const htmlEl = document.querySelector('.box');
-  const transformedData = transformData(data);
-
-  for (let i = 0; i < transformedData.length; i++) {
-    const item = transformedData[i];
-    htmlEl.innerHTML += callback(item);
+function myForeach(f) {
+  for (let i = 0; i < this.length; i++) {
+      f(this[i]);
   }
-}
-
-function transformData(arr) {
-  const transformedData = [];
-  for (let i = 0; i < arr.length; i++) {
-    const item = arr[i].toUpperCase();
-    transformedData.push(item);
-  }
-  return transformedData;
-}
-
-function getDivElement(item) {
-  return `<div class="box-item">${item}</div>`
 }
