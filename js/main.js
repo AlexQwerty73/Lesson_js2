@@ -1,130 +1,85 @@
 const doc = document;
-const productsSelector = '.products';
-const cart = {
-  1: 9,
-  2: 5,
-  3: 3,
+const btn = doc.querySelector('#btn-dog');
+const photoContainer = doc.querySelector('.dog-photo');
+const opSelect = doc.querySelector('#select');
+const selectContainer = doc.querySelector('.select-container');
+
+const api = {
+  random: 'https://dog.ceo/api/breeds/image/random',
+  breeds: 'https://dog.ceo/api/breeds/list/all'
 };
 
-renderProducts(products, productsSelector);
-renderCart(products, cart, 'body');
-
-function renderProducts(dataArr, insertSelector) {
-  for (let product of dataArr) {
-    renderProduct(product, insertSelector);
+btn.onclick = () => showDog(api.random, fetchDog, photoContainer)
+console.log(fetchBreeds(api.breeds));
+opSelect.onchange = () => {
+  const element = '#breed';
+  console.log(isElementExists(element));
+  if (isElementExists(element)) {
+    removeElement(element)
+  } else {
+    renderBreedsSelect(api.breeds, fetchBreeds, selectContainer)
   }
 }
 
-function renderProduct(prodObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-  const 
-    product = doc.createElement('div'),
-    productImgWrap = doc.createElement('div'),
-    productImg = doc.createElement('img'),
-    productTitle = doc.createElement('h3'),
-    productPriceBlock = doc.createElement('div'),
-    productPrice = doc.createElement('span'),
-    addCart = doc.createElement('button'),
-    productCategory = doc.createElement('span');
-/*
-append, prepend, before, after, replaceWith
-*/ 
+async function fetchDog(url) {
+  const res = await fetch(url);
+  const data = await res.json();
+  const src = data.message;
+  return src;
+}
+async function fetchBreeds(url) {
+  const res = await fetch(url);
+  const data = await res.json();
+  let obj = data.message;
+  // obj = removeEmptyArrays(obj);
+  return obj;
+}
 
-  const {id, title, category, img, price} = prodObj;
-  const imgPath = `./img/products/${category}/${img}`;
+async function getBreedArr(breed) {
+  const url = `https://dog.ceo/api/breed/${breed}/images`;
+  const res = await fetch(url);
+  const data = await res.json();
 
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
+  return data;
+}
+
+async function showDog(url, fetchCallback, parentElement) {
+  const imgSrc = await fetchCallback(url);
+  renderDogImg(imgSrc, parentElement)
+}
+function renderDogImg(src, parentElement) {
+  parentElement.innerHTML = `<img src="${src}">`;
+}
+async function renderBreedsSelect(url, fetchCallback, parentElement) {
+  const newSelect = doc.createElement('select');
+  const obj = await fetchCallback(url);
+  let breedsArr = [];
+  for (let key in obj) breedsArr.push(key);
+
+
+  for (let breed of breedsArr) {
+    const breedOp = doc.createElement('option');
+    breedOp.value = breed;
+    breedOp.innerText = breed;
+    newSelect.append(breedOp);
   }
-
-  product.className = 'product';
-  product.dataset.id = id;
-
-  productImgWrap.className = 'product-img';
-  productImg.src = imgPath;
-  productImg.alt = img;
-  productImgWrap.append(productImg);
-
-  productTitle.className = 'product-title';
-  productTitle.innerHTML = title;
-
-  productPriceBlock.className = 'product-price-block';
-  productPrice.className = 'product-price';
-  productPrice.innerHTML = price;
-  
-  addCart.className = 'add-cart';
-  addCart.innerHTML = 'Add cart'
-  productPriceBlock.append(productPrice, addCart);
-
-  productCategory.className = 'product-category';
-  productCategory.innerText = category;
-
-  product.append(
-    productImgWrap,
-    productTitle,
-    productPriceBlock,
-    productCategory
-  );
-
-  parentEl.append(product);
-
-  addCart.onclick = addCartHandler;
+  parentElement.append(newSelect);
 }
 
-function renderCart(dataArr, cartProdsObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  const 
-    cart = doc.createElement('div'),
-    cartTitle = doc.createElement('h3'),
-    cartProds = doc.createElement('ul');
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
-
-  cart.className = 'cart';
-
-  cartTitle.className = 'cart-title';
-  cartTitle.innerText = 'Cart';
-
-  cartProds.className = 'cart-prods';
-
-  parentEl.append(cart);
-  cart.append(cartTitle, cartProds);
-
-  renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(5000, '.cart');
+function isElementExists(element) {
+  const elem = document.querySelector(element);
+  return !!elem;
 }
-
-function renderCartProds(dataArr, cartProdsObj, insertSelector) {
-  let count = 1;
-
-  for (id in cartProdsObj) {
-    const qty = cartProdsObj[id];
-    const prod = dataArr.find(item => item.id == id);
-
-    renderCartProd(prod, qty, count, insertSelector);
-    count ++;
-  }
+function removeElement(element) {
+  const elem = document.querySelector(element);
+  elem.parentNode.removeChild(elem);
 }
-
-function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function renderCartTotal(totalSum, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function addCartHandler() {
-  const id = this.closest('.product').dataset.id;
-  
-  cart[id] = !cart[id] ? 1 : cart[id] + 1;
-}
+// function removeEmptyArrays(obj) {
+//   const newObj = {};
+//   for (const key in obj) {
+//     if (obj[key].length > 0) {
+//       newObj[key] = obj[key];
+//     }
+//   }
+//   return newObj;
+// }
