@@ -5,6 +5,10 @@ Array.prototype.myFilter = myFilter
 Array.prototype.myFind = myFind
 
 
+let arr = [1,3,4,6]
+
+console.log(arr.myFilter((a) => a == 3));
+
 function myForeach(f) {
   for (let i = 0; i < this.length; i++) {
     f(this[i], i);
