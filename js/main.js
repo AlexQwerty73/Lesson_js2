@@ -3,25 +3,34 @@ const btn = doc.querySelector('#btn-dog');
 const photoContainer = doc.querySelector('.dog-photo');
 const opSelect = doc.querySelector('#select');
 const selectContainer = doc.querySelector('.select-container');
+const breedSelectSelector = '#breed';
 
 const api = {
   random: 'https://dog.ceo/api/breeds/image/random',
-  breeds: 'https://dog.ceo/api/breeds/list/all'
+  breeds: 'https://dog.ceo/api/breeds/list/all',
+  subBreed:'https://dog.ceo/api/breed/hound/list'//!!!!!!!!!
 };
 
-btn.onclick = () => showDog(api.random, fetchDog, photoContainer)
-console.log(fetchBreeds(api.breeds));
+btn.onclick = () => {
+  if (isElementPresent(breedSelectSelector)) {
+    const select = doc.querySelector(breedSelectSelector);
+    const selectVal = select.value;
+
+    showBreedDog(selectVal, fetchBreeds, photoContainer)
+  } else {
+    showDog(api.random, fetchRandDog, photoContainer)
+  }
+};
+
 opSelect.onchange = () => {
-  const element = '#breed';
-  console.log(isElementExists(element));
-  if (isElementExists(element)) {
-    removeElement(element)
+  if (isElementPresent(breedSelectSelector)) {
+    removeElement(breedSelectSelector)
   } else {
     renderBreedsSelect(api.breeds, fetchBreeds, selectContainer)
   }
 }
 
-async function fetchDog(url) {
+async function fetchRandDog(url) {
   const res = await fetch(url);
   const data = await res.json();
   const src = data.message;
@@ -31,7 +40,6 @@ async function fetchBreeds(url) {
   const res = await fetch(url);
   const data = await res.json();
   let obj = data.message;
-  // obj = removeEmptyArrays(obj);
   return obj;
 }
 
@@ -47,11 +55,18 @@ async function showDog(url, fetchCallback, parentElement) {
   const imgSrc = await fetchCallback(url);
   renderDogImg(imgSrc, parentElement)
 }
+async function showBreedDog(breed, fetchCallback, parentElement) {
+  const url = `https://dog.ceo/api/breed/${breed}/images`
+  const arr = await fetchCallback(url);
+  const imgSrc = arr[getRandomNum(0, arr.length)]
+  renderDogImg(imgSrc, parentElement)
+}
 function renderDogImg(src, parentElement) {
   parentElement.innerHTML = `<img src="${src}">`;
 }
 async function renderBreedsSelect(url, fetchCallback, parentElement) {
   const newSelect = doc.createElement('select');
+  newSelect.id = 'breed'
   const obj = await fetchCallback(url);
   let breedsArr = [];
   for (let key in obj) breedsArr.push(key);
@@ -73,16 +88,9 @@ function findElement(selector) {
 function isElementPresent(selector) {
   return !!findElement(selector);
 }
-function removeElement(element) {
-  const elem = document.querySelector(element);
-  elem.parentNode.removeChild(elem);
+function removeElement(selector) {
+  doc.querySelector(selector).remove();
 }
-// function removeEmptyArrays(obj) {
-//   const newObj = {};
-//   for (const key in obj) {
-//     if (obj[key].length > 0) {
-//       newObj[key] = obj[key];
-//     }
-//   }
-//   return newObj;
-// }
+function getRandomNum(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
