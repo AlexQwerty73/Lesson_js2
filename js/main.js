@@ -66,9 +66,12 @@ async function renderBreedsSelect(url, fetchCallback, parentElement) {
   parentElement.append(newSelect);
 }
 
-function isElementExists(element) {
-  const elem = document.querySelector(element);
-  return !!elem;
+
+function findElement(selector) {
+  return doc.querySelector(selector);
+}
+function isElementPresent(selector) {
+  return !!findElement(selector);
 }
 function removeElement(element) {
   const elem = document.querySelector(element);
