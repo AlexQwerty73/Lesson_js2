@@ -12,7 +12,7 @@ const api = {
   random: 'https://dog.ceo/api/breeds/image/random',
   breeds: 'https://dog.ceo/api/breeds/list/all',
   subBreed: `https://dog.ceo/api/breed/***/list`
-};
+};//+галерея собак выбраной породы!!!!!!!!!!!
 
 btn.onclick = () => {
   if (opSelect.value === 'sub-breed') {
