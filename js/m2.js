@@ -3,56 +3,59 @@ const btn = doc.querySelector('#btn-dog');
 const photoContainer = doc.querySelector('.dog-photo');
 const opSelect = doc.querySelector('#select');
 const selectContainer = doc.querySelector('.select-container');
+
 const breedSelectSelector = '#breed';
 const subBreedSelectSelector = '#subBreed';
-
-let breed = 'affenpinscher';
 
 const api = {
   random: 'https://dog.ceo/api/breeds/image/random',
   breeds: 'https://dog.ceo/api/breeds/list/all',
-  subBreed: `https://dog.ceo/api/breed/***/list`
 };
 
-btn.onclick = () => {
-  if (opSelect.value === 'sub-breed') {
-    const selectSB = doc.querySelector(subBreedSelectSelector);
-    const selectSBVal = selectSB.value;
+btn.onclick = async () => {
+  const breedSelect = doc.querySelector(breedSelectSelector);
+  const subBreedSelect = doc.querySelector(subBreedSelectSelector);
 
-    showSubBreedDog(breed, selectSBVal, fetchRandDog, photoContainer)
-  }
-  else if (opSelect.value === 'breed') {
-    const select = doc.querySelector(breedSelectSelector);
-    const selectVal = select.value;
-
-    showBreedDog(selectVal, fetchRandDog, photoContainer)
-  } else if (opSelect.value === 'random') {
-    showDog(api.random, fetchRandDog, photoContainer)
+  if (subBreedSelect && subBreedSelect.options.length > 0) {
+    const breedVal = breedSelect.value;
+    const subBreedVal = subBreedSelect.value;
+    showSubBreedDog(breedVal, subBreedVal, fetchDog, photoContainer);
+  } else if (breedSelect && breedSelect.options.length > 0) {
+    const selectVal = breedSelect.value;
+    showBreedDog(selectVal, fetchDog, photoContainer);
+  } else {
+    showDog(api.random, fetchDog, photoContainer);
   }
 };
-opSelect.onchange = () => {
-  if (opSelect.value === 'sub-breed') {
-    if (isElementPresent(breedSelectSelector)) removeElement(breedSelectSelector);
-    if (isElementPresent(subBreedSelectSelector)) removeElement(subBreedSelectSelector);
-    renderBreedsSelect(api.breeds, fetchRandDog, selectContainer)
-    renderSubBreedsSelect(api.subBreed.replace('***', breed), fetchRandDog, selectContainer)
-  }
-  else if (opSelect.value === 'breed') {
-    if (isElementPresent(breedSelectSelector)) removeElement(breedSelectSelector);
-    if (isElementPresent(subBreedSelectSelector)) removeElement(subBreedSelectSelector);
-    renderBreedsSelect(api.breeds, fetchRandDog, selectContainer);
-  } else if (opSelect.value === 'random') {
-    removeElement(breedSelectSelector);
+
+opSelect.onchange = () => renderSelects();
+
+ function renderSelects() {
+  const breedSelect = doc.querySelector(breedSelectSelector);
+  const subBreedSelect = doc.querySelector(subBreedSelectSelector);
+
+  if (opSelect.value === 'random') {
+    if (breedSelect) removeElement(breedSelect);
+    if (subBreedSelect) removeElement(subBreedSelect);
+  } else if (opSelect.value === 'breed') {
+    if (!breedSelect) renderBreedsSelect(api.breeds, fetchDog, selectContainer);
+    if (subBreedSelect) removeElement(subBreedSelect);
+  } else if (opSelect.value === 'sub-breed') {
+    if (!breedSelect) renderBreedsSelect(api.breeds, fetchDog, selectContainer);
+    if (!subBreedSelect) renderSubBreedsSelect(getSubBreedUrl(breedSelectSelector), fetchDog, selectContainer);
   }
 }
 
-async function fetchRandDog(url) {
+function rerenderSubBreed() {
+// 
+}
+
+async function fetchDog(url) {
   const res = await fetch(url);
   const data = await res.json();
   const src = data.message;
   return src;
 }
-
 
 async function getBreedArr(breed) {
   const url = `https://dog.ceo/api/breed/${breed}/images`;
@@ -70,13 +73,15 @@ async function showBreedDog(breed, fetchCallback, parentElement) {
   const url = `https://dog.ceo/api/breed/${breed}/images`
   const arr = await fetchCallback(url);
   const imgSrc = arr[getRandomNum(0, arr.length)]
-  renderDogImg(imgSrc, parentElement);
+  renderDogImg(imgSrc, parentElement)
 }
 async function showSubBreedDog(breed, subBreed, fetchCallback, parentElement) {
-  const url = subBreed != '' ? `https://dog.ceo/api/breed/${breed}/${subBreed}/images`:`https://dog.ceo/api/breed/${breed}/images`
+  console.log(breed, subBreed);
+  const url = `https://dog.ceo/api/breed/${breed}/${subBreed}/images`
+  console.log(url);
   const arr = await fetchCallback(url);
-  const imgSrc = arr[getRandomNum(0, arr.length)]
-  renderDogImg(imgSrc, parentElement)
+  const imgSrc = arr[getRandomNum(0, arr.length)];
+  renderDogImg(imgSrc, parentElement);
 }
 function renderDogImg(src, parentElement) {
   parentElement.innerHTML = `<img src="${src}">`;
@@ -96,38 +101,23 @@ async function renderBreedsSelect(url, fetchCallback, parentElement) {
     newSelect.append(breedOp);
   }
   parentElement.append(newSelect);
-
-  newSelect.onchange = () => {
-    breed = newSelect.value;
-    api.subBreed = api.subBreed.replace('***', breed);
-    if (opSelect.value === 'sub-breed') {
-      removeElement(subBreedSelectSelector);
-      renderSubBreedsSelect(
-        api.subBreed.includes('***') ?
-          api.subBreed.replace('***', breed) : `https://dog.ceo/api/breed/${breed}/list`
-        , fetchRandDog, selectContainer)
-    }
-  }
 }
-
-async function renderSubBreedsSelect(url, fetchCallback, parentElement) {
-  console.log(url);
+async function renderSubBreedsSelect(subBreedsUrl, fetchCallback, parentElement) {
   const newSelect = doc.createElement('select');
   newSelect.id = 'subBreed'
-  const obj = await fetchCallback(url);
+  const obj = await fetchCallback(subBreedsUrl);
   let breedsArr = [];
   for (let key of obj) breedsArr.push(key);
-  console.log(breedsArr);
 
-  for (let breed of breedsArr) {
+
+  for (let subBreed of breedsArr) {
     const breedOp = doc.createElement('option');
-    breedOp.value = breed;
-    breedOp.innerText = breed;
+    breedOp.value = subBreed;
+    breedOp.innerText = subBreed;
     newSelect.append(breedOp);
   }
   parentElement.append(newSelect);
 }
-
 
 function findElement(selector) {
   return doc.querySelector(selector);
@@ -140,4 +130,8 @@ function removeElement(selector) {
 }
 function getRandomNum(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+async function getSubBreedUrl(breedSelect) {
+  console.log(breedSelect);
+  return breedSelect.value;
 }
