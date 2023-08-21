@@ -11,8 +11,8 @@ let breed = 'affenpinscher';
 const api = {
   random: 'https://dog.ceo/api/breeds/image/random',
   breeds: 'https://dog.ceo/api/breeds/list/all',
-  subBreed: `https://dog.ceo/api/breed/***/list`
-};//+галерея собак выбраной породы!!!!!!!!!!!
+  subBreed: `https://dog.ceo/api/breed/***/list`,
+};
 
 btn.onclick = () => {
   if (opSelect.value === 'sub-breed') {
@@ -28,6 +28,10 @@ btn.onclick = () => {
     showBreedDog(selectVal, fetchRandDog, photoContainer)
   } else if (opSelect.value === 'random') {
     showDog(api.random, fetchRandDog, photoContainer)
+  } else if (opSelect.value === 'gallery') {
+    const select = doc.querySelector(breedSelectSelector);
+    const selectVal = select.value;
+    showBreedGallery(selectVal, fetchRandDog, photoContainer)
   }
 };
 opSelect.onchange = () => {
@@ -43,6 +47,11 @@ opSelect.onchange = () => {
     renderBreedsSelect(api.breeds, fetchRandDog, selectContainer);
   } else if (opSelect.value === 'random') {
     removeElement(breedSelectSelector);
+    removeElement(subBreedSelectSelector);
+  } else if (opSelect.value === 'gallery') {
+    if (isElementPresent(breedSelectSelector)) removeElement(breedSelectSelector);
+    if (isElementPresent(subBreedSelectSelector)) removeElement(subBreedSelectSelector);
+    renderBreedsSelect(api.breeds, fetchRandDog, selectContainer);
   }
 }
 
@@ -73,11 +82,20 @@ async function showBreedDog(breed, fetchCallback, parentElement) {
   renderDogImg(imgSrc, parentElement);
 }
 async function showSubBreedDog(breed, subBreed, fetchCallback, parentElement) {
-  const url = subBreed != '' ? `https://dog.ceo/api/breed/${breed}/${subBreed}/images`:`https://dog.ceo/api/breed/${breed}/images`
+  const url = subBreed != '' ? `https://dog.ceo/api/breed/${breed}/${subBreed}/images` : `https://dog.ceo/api/breed/${breed}/images`
   const arr = await fetchCallback(url);
   const imgSrc = arr[getRandomNum(0, arr.length)]
   renderDogImg(imgSrc, parentElement)
 }
+async function showBreedGallery(breed, fetchCallback, parentElement){
+  parentElement.innerHTML = '';
+  const url = `https://dog.ceo/api/breed/${breed}/images`
+  const arr = await fetchCallback(url);
+  for(let i = 0; i< arr.length; i++){
+  parentElement.innerHTML += `<img src="${arr[i]}">`;
+  }
+}
+
 function renderDogImg(src, parentElement) {
   parentElement.innerHTML = `<img src="${src}">`;
 }
