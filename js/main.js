@@ -1,130 +1,115 @@
 const doc = document;
-const productsSelector = '.products';
-const cart = {
-  1: 9,
-  2: 5,
-  3: 3,
-};
+const token = 'EAGCSKQ-760M1MQ-H731SRK-16C0C1C';
 
-renderProducts(products, productsSelector);
-renderCart(products, cart, 'body');
+const baseUrl = 'https://api.kinopoisk.dev';
+const headers = { "accept": "application/json" }
 
-function renderProducts(dataArr, insertSelector) {
-  for (let product of dataArr) {
-    renderProduct(product, insertSelector);
+const resourses = {
+  health: '/v1/health',
+  movies: {
+    movie: '/v1.3/movie?page=2&limit=10'
   }
 }
 
-function renderProduct(prodObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-  const 
-    product = doc.createElement('div'),
-    productImgWrap = doc.createElement('div'),
-    productImg = doc.createElement('img'),
-    productTitle = doc.createElement('h3'),
-    productPriceBlock = doc.createElement('div'),
-    productPrice = doc.createElement('span'),
-    addCart = doc.createElement('button'),
-    productCategory = doc.createElement('span');
-/*
-append, prepend, before, after, replaceWith
-*/ 
-
-  const {id, title, category, img, price} = prodObj;
-  const imgPath = `./img/products/${category}/${img}`;
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
-
-  product.className = 'product';
-  product.dataset.id = id;
-
-  productImgWrap.className = 'product-img';
-  productImg.src = imgPath;
-  productImg.alt = img;
-  productImgWrap.append(productImg);
-
-  productTitle.className = 'product-title';
-  productTitle.innerHTML = title;
-
-  productPriceBlock.className = 'product-price-block';
-  productPrice.className = 'product-price';
-  productPrice.innerHTML = price;
-  
-  addCart.className = 'add-cart';
-  addCart.innerHTML = 'Add cart'
-  productPriceBlock.append(productPrice, addCart);
-
-  productCategory.className = 'product-category';
-  productCategory.innerText = category;
-
-  product.append(
-    productImgWrap,
-    productTitle,
-    productPriceBlock,
-    productCategory
-  );
-
-  parentEl.append(product);
-
-  addCart.onclick = addCartHandler;
+//  getMovies().then(data => renderMovie(data.docs[0], '.films'))
+// getMovies().then(data => renderMovies(data.docs, '.films'));
+function renderMovies(filmArr, parentElementSelector) {
+  filmArr.forEach(film => {
+    renderMovie(film, parentElementSelector)
+  });
 }
 
-function renderCart(dataArr, cartProdsObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
+function renderMovie(filmObj, parentElementSelector) {
+  const parEl = doc.querySelector(parentElementSelector);
+  const film = doc.createElement('div');
 
-  const 
-    cart = doc.createElement('div'),
-    cartTitle = doc.createElement('h3'),
-    cartProds = doc.createElement('ul');
+  const {
+    name,
+    alternativeName,
+    year,
+    description,
+    countries,
+    rating,
+    genres
+  } = filmObj;
 
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
+  const countriesHtml =
+    countries
+      .map(countrie => `<li class="film__country">${countrie.name}</li> `)
+      .join('');
+
+  const genresHtml =
+    genres
+      .map(genre => `<li class="film__genre">${genre.name}</li> `)
+      .join('');
+
+  function ratingHtml() {
+    let html = '';
+    for (let key in rating) {
+      if(rating[key] == null) continue;
+      html +=`
+        <li class="film__rate">
+          <span>${key}</span>
+          <span>${rating[key]}</span>
+        </li>
+        `;
+    }
+    return html;
   }
 
-  cart.className = 'cart';
+  film.className = 'film';
+  film.innerHTML = `
+    <div class="film__front">
+      <div class="film__header mb-2">
+        <h3 class="film__name">${name}</h3>
+        <p class="film__alt-name">${alternativeName}</p>
+        <p class="film__year">${year}</p>
+      </div>
+    </div>
 
-  cartTitle.className = 'cart-title';
-  cartTitle.innerText = 'Cart';
+    <ul class="film__countries mb-2">
+      ${countriesHtml}
+    </ul>
 
-  cartProds.className = 'cart-prods';
+    <ul class="film__genres mb-2">
+      ${genresHtml}
+    </ul>
 
-  parentEl.append(cart);
-  cart.append(cartTitle, cartProds);
+    <div class="film__back mb-2">
+      <h3 class="film__name">${name}</h3>
+      <p class="film__description">${description}</p>
+    </div>
 
-  renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(5000, '.cart');
+    <ul class="film__rates">
+      ${ratingHtml()}
+    </ul>
+  `;
+  parEl.append(film);
 }
 
-function renderCartProds(dataArr, cartProdsObj, insertSelector) {
-  let count = 1;
+async function getMovies() {
+  const url = baseUrl + resourses.movies.movie;
 
-  for (id in cartProdsObj) {
-    const qty = cartProdsObj[id];
-    const prod = dataArr.find(item => item.id == id);
+  headers['X-API-KEY'] = token;
 
-    renderCartProd(prod, qty, count, insertSelector);
-    count ++;
+  try {
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+
+    return data;
+  } catch (e) {
+    console.log(e);
   }
 }
 
-function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
+async function getHealth() {
+  const url = baseUrl + resourses.health;
+  try {
+    const res = await fetch(url, { headers });
+    const data = await res.json();
 
-  
-}
-
-function renderCartTotal(totalSum, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function addCartHandler() {
-  const id = this.closest('.product').dataset.id;
-  
-  cart[id] = !cart[id] ? 1 : cart[id] + 1;
+    console.log(data);
+  } catch (e) {
+    console.log(e);
+  }
 }
