@@ -87,12 +87,12 @@ async function showSubBreedDog(breed, subBreed, fetchCallback, parentElement) {
   const imgSrc = arr[getRandomNum(0, arr.length)]
   renderDogImg(imgSrc, parentElement)
 }
-async function showBreedGallery(breed, fetchCallback, parentElement){
+async function showBreedGallery(breed, fetchCallback, parentElement) {
   parentElement.innerHTML = '';
   const url = `https://dog.ceo/api/breed/${breed}/images`
   const arr = await fetchCallback(url);
-  for(let i = 0; i< arr.length; i++){
-  parentElement.innerHTML += `<img src="${arr[i]}">`;
+  for (let i = 0; i < arr.length; i++) {
+    parentElement.innerHTML += `<img src="${arr[i]}">`;
   }
 }
 

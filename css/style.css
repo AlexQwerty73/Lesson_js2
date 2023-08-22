@@ -26,6 +26,9 @@
 .btn:hover{
   background: rgb(172, 255, 172);
 }
+select, button{
+  cursor: pointer;
+}
 .select-container *{
   font-size: 30px;
   margin: 0 0 10px;
