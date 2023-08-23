@@ -4,7 +4,7 @@
   box-sizing: border-box;
 }
 
-li {
+li{
   list-style: none;
 }
 
@@ -17,6 +17,24 @@ li {
 .mb-2 {
   margin-bottom: 20px;
 }
+
+.pagination-section{}
+.pagination{}
+.page-list{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.page{
+  cursor: pointer;
+  margin-right: 5px;
+  font-size: 20px;
+}
+.page.active{
+  color: rgb(255, 63, 63);
+}
+
 
 .films-section {}
 
