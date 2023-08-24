@@ -13,11 +13,11 @@ btn.onclick = (e) => {
         const nameV = nameInput.value;
         const emailV = emailInput.value;
         const phoneV = phoneInput.value;
-        
-        localStorage.setItem('form', `{name: ${nameV}, email: ${emailV}, phone: ${phoneV}}`);
+
+        localStorage.setItem('form', `{"name": "${nameV}", "email": "${emailV}", "phone": "${phoneV}"}`);
         window.location.href = `./final.html`;
     } else {
-        alert("Form validation failed. Please check your inputs.");
+        alert("Form validation failed. please check your inputs.");
     }
 }
 
@@ -34,7 +34,6 @@ function validateEmailInput() {
     if (emailPattern.test(email)) {
         return true;
     } else {
-        alert("Please enter a valid email address.");
         return false;
     }
 }
@@ -45,7 +44,6 @@ function validatePhoneInput() {
     if (phonePattern.test(phone)) {
         return true;
     } else {
-        alert("Please enter a valid 10-digit phone number.");
         return false;
     }
 }
