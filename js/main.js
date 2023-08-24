@@ -163,5 +163,7 @@ function pigIt(str) {
 }
 
 
+const countSheeps = (arr) => arr.reduce((count, value) => count + (value === true), 0);
 
-console.log(pigIt('Pig latin is cool'));
+
+console.log(countSheeps([true, true, true, false, true, false]));
