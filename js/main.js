@@ -42,4 +42,126 @@ function SeriesSum(n) {
 
 
 
+function validateBattlefield(field) {
+  const len = field.length;
+  const ships = {
+    1: 4,
+    2: 3,
+    3: 2,
+    4: 1,
+  };
+  let shipCount = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+  };
 
+  for (let i = 0; i < len; i++) {
+    for (let j = 0; j < len; j++) {
+      const x = field[i][j];
+      if (x === 1) {
+        if (
+          (i > 0 && field[i - 1][j] === 1) ||
+          (j > 0 && field[i][j - 1] === 1)
+        ) {
+          return false;
+        }
+
+        if (j > 0) {
+          if (i > 0) {
+            if (field[i - 1][j - 1] === x) {
+              return false;
+            }
+          }
+          if (len > i) {
+            if (field[i + 1][j - 1] === x) {
+              return false;
+            }
+          }
+        }
+        if (j < len - 1) {
+          if (i > 0) {
+            if (field[i - 1][j + 1] === x) {
+              return false;
+            }
+          }
+          if (len > i) {
+            if (field[i + 1][j + 1] === x) {
+              return false;
+            }
+          }
+        }
+
+        let shipSize = 1;
+        for (let k = j + 1; k < len && field[i][k] === 1; k++) {
+          shipSize++;
+        }
+        for (let k = i + 1; k < len && field[k][j] === 1; k++) {
+          shipSize++;
+        }
+
+        if (!(shipSize in ships)) {
+          return false;
+        }
+        shipCount[shipSize]++;
+        if (shipCount[shipSize] > ships[shipSize]) {
+          return false;
+        }
+
+        for (let k = 0; k < shipSize; k++) {
+          if (i + k < len) {
+            field[i + k][j] = 2;
+          }
+          if (j + k < len) {
+            field[i][j + k] = 2;
+          }
+        }
+      }
+    }
+  }
+
+  for (const size in ships) {
+    if (shipCount[size] !== ships[size]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+// console.log(validateBattlefield([
+//   [1, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+//   [1, 0, 1, 0, 0, 0, 0, 0, 1, 0],
+//   [1, 0, 1, 0, 1, 1, 1, 0, 1, 0],
+//   [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//   [0, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+//   [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+//   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+// ]));
+
+
+
+
+function pigIt(str) {
+  const arr = str.split(' ');
+
+  let na = '';
+  for (let word of arr) {
+    if (/^[a-zA-Z]+$/.test(word)) {
+      const w = [...word];
+      const fl = w.shift();
+      na += w.join('') + fl + 'ay ';
+    } else {
+      na += word + ' ';
+    }
+  }
+  return na.trim();
+}
+
+
+
+console.log(pigIt('Pig latin is cool'));
