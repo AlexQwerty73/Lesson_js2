@@ -1,6 +1,7 @@
 const doc = document;
 const numOfMoviesPerPage = doc.querySelector('#numOfMoviesPerPage');
-const pageList = doc.querySelector('.page-list')
+const pageList = doc.querySelector('.page-list');
+const sortSelect = doc.querySelector('#sort-select');
 const parentElementFilms = '.films'
 
 const token = 'EAGCSKQ-760M1MQ-H731SRK-16C0C1C';
@@ -14,8 +15,6 @@ const resourses = {
     movie: '/v1.3/movie?page=1&limit=10'
   }
 }
-
-
 
 // getMovies().then(data => {
 //   renderMovies(data.docs, parentElementFilms);
@@ -37,7 +36,28 @@ numOfMoviesPerPage.onchange = (e) => {
   });
 
 }
-function getNewFilms(page, limit){
+sortSelect.onchange = (e) => {
+  const val = e.target.value;
+  const filmCont = doc.querySelector(parentElementFilms);
+
+  if (val != 'none') {
+    getSortMovies(val).then(data => {
+      filmCont.innerHTML = ' '
+      renderMovies(data.docs, parentElementFilms);
+      pageList.innerHTML = ' ';
+      renderPagination(10, pageList);
+    });
+  } else {
+    getMovies().then(data => {
+      filmCont.innerHTML = ' '
+      renderMovies(data.docs, parentElementFilms);
+      pageList.innerHTML = ' ';
+      renderPagination(10, pageList);
+    });
+  }
+}
+
+function getNewFilms(page, limit) {
   return `/v1.3/movie?page=${page}&limit=${limit}`
 }
 function renderPagination(numOfMoviesPerPage, parentElement) {
@@ -146,6 +166,21 @@ function renderMovie(filmObj, parentElementSelector) {
 
 async function getMovies() {
   const url = baseUrl + resourses.movies.movie;
+
+  headers['X-API-KEY'] = token;
+
+  try {
+    const res = await fetch(url, { headers });
+    const data = await res.json();
+
+    return data;
+  } catch (e) {
+    console.warn(e);
+  }
+}
+
+async function getSortMovies(sort) {
+  const url = `https://api.kinopoisk.dev/v1.3/movie?sortField=${sort}&page=1`;
 
   headers['X-API-KEY'] = token;
 
