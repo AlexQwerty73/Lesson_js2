@@ -47,3 +47,19 @@ form{
 form *{
     margin-bottom: 10px;
 }
+
+
+/* ---------final---------- */
+
+.container.final{
+    margin: 5% auto;
+    padding: 10px;
+    border: 2px solid silver;
+}
+.container.final *{
+    margin-bottom: 20px;
+}
+
+.container.final h2{
+    border-bottom: 2px solid silver;
+}
