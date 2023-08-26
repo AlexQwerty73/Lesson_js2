@@ -165,8 +165,5 @@ function pigIt(str) {
 
 const countSheeps = (arr) => arr.reduce((count, value) => count + (value === true), 0);
 
-function digitalRoot(n) {
-  return n.toString().length > 1 ? digitalRoot([...(n).toString()].reduce((sum, num) => sum + Number(num), 0)) : n;
-}
 
-console.log(digitalRoot(93));
+
