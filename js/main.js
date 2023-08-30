@@ -8,7 +8,7 @@ const urls = {
   products: 'http://localhost:3000/products',
   cart: 'http://localhost:3000/cart',
   users: 'http://localhost:3000/users'
-};
+};//https://www.npmjs.com/package/json-server
 const addItemBtn = doc.querySelector('.add-item');
 const productPerPageSelect = doc.querySelector('.productPerPage select');
 
