@@ -1,130 +1,104 @@
+// location.href = `http://127.0.0.1:5500/?sort=desc&filter=nocomplited`
+
+const todos = [
+  { id: 2, body: 'todo2', completed: false },
+  { id: 6, body: 'todo6', completed: true },
+  { id: 4, body: 'todo4', completed: false },
+  { id: 3, body: 'todo3', completed: true },
+  { id: 5, body: 'todo5', completed: false },
+  { id: 1, body: 'todo1', completed: true },
+];
 const doc = document;
-const productsSelector = '.products';
-const cart = {
-  1: 9,
-  2: 5,
-  3: 3,
+const todosParEl = doc.querySelector('.todos');
+const checkBoxComplited = doc.querySelector('.complited');
+const checkBoxIdOrder = doc.querySelector('.idOrder');
+const resBtn = doc.querySelector('#res-btn');
+
+const sortByIdasc = [...todos].sort((a, b) => a.id - b.id);
+const sortByIddesc = [...todos].sort((a, b) => b.id - a.id);
+
+const params = getSearchParams();
+
+renderTodos(todosParEl, getNewData());
+
+
+checkBoxIdOrder.checked = location.href.includes('sort=desc');
+checkBoxComplited.checked = location.href.includes('filter=complited');
+
+resBtn.onclick = () => {
+  const locH = location.href;
+  const index = locH.indexOf('?');
+  console.log(index); 
+  
+  location.href = locH.substring(0, index);
+}
+
+checkBoxIdOrder.onchange = (e) => {
+  let url = new URL(location.href);
+
+  if (!url.searchParams.has('sort')) {
+    url.searchParams.set('sort', 'asc');
+  } else {
+    let currentSort = url.searchParams.get('sort');
+    url.searchParams.set('sort', currentSort === 'asc' ? 'desc' : 'asc');
+  }
+
+  location.href = url.toString();
 };
 
-renderProducts(products, productsSelector);
-renderCart(products, cart, 'body');
+checkBoxComplited.onchange = (e) => {
+  let url = new URL(location.href);
 
-function renderProducts(dataArr, insertSelector) {
-  for (let product of dataArr) {
-    renderProduct(product, insertSelector);
-  }
-}
-
-function renderProduct(prodObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-  const 
-    product = doc.createElement('div'),
-    productImgWrap = doc.createElement('div'),
-    productImg = doc.createElement('img'),
-    productTitle = doc.createElement('h3'),
-    productPriceBlock = doc.createElement('div'),
-    productPrice = doc.createElement('span'),
-    addCart = doc.createElement('button'),
-    productCategory = doc.createElement('span');
-/*
-append, prepend, before, after, replaceWith
-*/ 
-
-  const {id, title, category, img, price} = prodObj;
-  const imgPath = `./img/products/${category}/${img}`;
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
+  if (!url.searchParams.has('filter')) {
+    url.searchParams.set('filter', 'complited');
+  } else {
+    let currentFilter = url.searchParams.get('filter');
+    url.searchParams.set('filter', currentFilter === 'complited' ? 'nocomplited' : 'complited');
   }
 
-  product.className = 'product';
-  product.dataset.id = id;
+  location.href = url.toString();
+};
 
-  productImgWrap.className = 'product-img';
-  productImg.src = imgPath;
-  productImg.alt = img;
-  productImgWrap.append(productImg);
+function getNewData() {
+  let newData =
+    params.sort
+      ? params.sort == 'asc'
+        ? sortByIdasc
+        : params.sort == 'desc'
+          ? sortByIddesc
+          : todos
+      : todos;
 
-  productTitle.className = 'product-title';
-  productTitle.innerHTML = title;
-
-  productPriceBlock.className = 'product-price-block';
-  productPrice.className = 'product-price';
-  productPrice.innerHTML = price;
-  
-  addCart.className = 'add-cart';
-  addCart.innerHTML = 'Add cart'
-  productPriceBlock.append(productPrice, addCart);
-
-  productCategory.className = 'product-category';
-  productCategory.innerText = category;
-
-  product.append(
-    productImgWrap,
-    productTitle,
-    productPriceBlock,
-    productCategory
-  );
-
-  parentEl.append(product);
-
-  addCart.onclick = addCartHandler;
+  newData =
+    params.filter
+      ? params.filter == 'complited'
+        ? newData.filter(a => a.completed)
+        : params.filter == 'nocomplited'
+          ? newData.filter(a => !a.completed)
+          : newData
+      : newData;
+  return newData;
 }
 
-function renderCart(dataArr, cartProdsObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  const 
-    cart = doc.createElement('div'),
-    cartTitle = doc.createElement('h3'),
-    cartProds = doc.createElement('ul');
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
-
-  cart.className = 'cart';
-
-  cartTitle.className = 'cart-title';
-  cartTitle.innerText = 'Cart';
-
-  cartProds.className = 'cart-prods';
-
-  parentEl.append(cart);
-  cart.append(cartTitle, cartProds);
-
-  renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(5000, '.cart');
+function getSearchParams() {
+  return Object.fromEntries(
+    location.search
+      .substring(1)
+      .split('&')
+      .map(item => item.split('=')));
 }
 
-function renderCartProds(dataArr, cartProdsObj, insertSelector) {
-  let count = 1;
-
-  for (id in cartProdsObj) {
-    const qty = cartProdsObj[id];
-    const prod = dataArr.find(item => item.id == id);
-
-    renderCartProd(prod, qty, count, insertSelector);
-    count ++;
-  }
+function getTodosEls(data) {
+  return data
+    .map(todo => (
+      `<li>
+      <span>${todo.id}</span>
+      <span>${todo.body}</span>
+      <span>${todo.completed}</span>
+    </li>`))
+    .join('');
 }
 
-function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function renderCartTotal(totalSum, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function addCartHandler() {
-  const id = this.closest('.product').dataset.id;
-  
-  cart[id] = !cart[id] ? 1 : cart[id] + 1;
+function renderTodos(parEl, data) {
+  parEl.innerHTML = getTodosEls(data);
 }
