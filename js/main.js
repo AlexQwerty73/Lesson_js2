@@ -165,19 +165,19 @@ function pigIt(str) {
 
 const countSheeps = (arr) => arr.reduce((count, value) => count + (value === true), 0);
 
-function isIsogram(text) {
-  text = text.toLowerCase()
-  let obj = {};
-  let res = '';
+function likes(names) {
+  if (names == []){
+    return "no one likes this";
+  }else if(names.length == 1){
+    return `${names[0]} likes this`
+  }else if(names.length ==2){
+    return `${names[0]} and ${names[1]} like this`
+  }else if(names.length ==3){
+    return `${names[0]}, ${names[1]} and ${names[2]} like this`
+  }else if(names.length > 3){
+    return `${names[0]}, ${names[1]} and ${names.length-2} others like this`
+  }
 
-  for (let key of text) obj[key] = 0;
-  for (let key of text) obj[key] += 1;
-
-  const repCharsArr = Object.entries(obj).filter(([key, value]) => value > 1).map(([key]) => key)
-
-  res = text.split('').map(char => repCharsArr.includes(char) ? ')' : '(').join('');
-
-  return res;
 }
 
-console.log(isIsogram('Indivisibilities'));
+console.log(likes([]));
