@@ -1,0 +1,32 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+li {
+  list-style: none;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+button {
+  text-decoration: none;
+  display: flex;
+  padding: 20px;
+  background: #ccfacc;
+  color: black;
+}
+
+label,
+input {
+  display: block;
+  padding: 5px;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+}

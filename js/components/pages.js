@@ -1,11 +1,15 @@
-import { pageHome } from "./pages/home.js";
-import { page404 } from "./pages/404.js";
-import { pageAbout } from "./pages/about.js";
-import { pagePost } from "./pages/post.js";
+import { pageHome } from "./pageHome.js";
+import { page404 } from "./page404.js";
+import { pageAbout } from "./pageAbout.js";
+import { pagePosts } from "./pagePosts.js";
+import { pageContacts } from "./pageContacts.js";
+import { pageSinglePost } from "./pageSinglePost.js";
 
 export {
-    page404,
-    pageAbout,
-    pageHome,
-    pagePost
+  pageHome,
+  page404,
+  pageAbout,
+  pagePosts,
+  pageContacts,
+  pageSinglePost,
 };
