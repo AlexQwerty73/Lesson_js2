@@ -7,7 +7,7 @@ let resources = null;
 export async function renderResources() {
   const resourcesHtmlEl = doc.querySelector('.resources');
 
-  resourcesHtmlEl.innerHTML = '<h3>Loading rousources ...</h3>'
+  resourcesHtmlEl.innerHTML = '<h3>Loading rousources...</h3>'
 
   resources = !resources 
     ? await getResources()
