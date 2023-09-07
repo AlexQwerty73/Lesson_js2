@@ -1,130 +1,38 @@
 const doc = document;
-const productsSelector = '.products';
-const cart = {
-  1: 9,
-  2: 5,
-  3: 3,
-};
+import { getResources } from "./API/api.js";
+import { baseUrl } from "./API/api.js";
 
-renderProducts(products, productsSelector);
-renderCart(products, cart, 'body');
+let resources = null;
 
-function renderProducts(dataArr, insertSelector) {
-  for (let product of dataArr) {
-    renderProduct(product, insertSelector);
-  }
-}
+renderResource()
 
-function renderProduct(prodObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-  const 
-    product = doc.createElement('div'),
-    productImgWrap = doc.createElement('div'),
-    productImg = doc.createElement('img'),
-    productTitle = doc.createElement('h3'),
-    productPriceBlock = doc.createElement('div'),
-    productPrice = doc.createElement('span'),
-    addCart = doc.createElement('button'),
-    productCategory = doc.createElement('span');
-/*
-append, prepend, before, after, replaceWith
-*/ 
+async function renderResource() {
+    const resourcesHtmlEl = doc.querySelector('.resources');
+    resources = !resources ? await getResources() : resources;
 
-  const {id, title, category, img, price} = prodObj;
-  const imgPath = `./img/products/${category}/${img}`;
+    const resourcesEls =
+        Object.keys(resources)
+            .map((resource) => {
+                return `<li class="resource btn">
+                    <a href="#/${resource}/">
+                        ${resource.charAt(0).toUpperCase() + resource.slice(1)}
+                    </a>
+                </li>`})
+            .join('');
 
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
+    resourcesHtmlEl.innerHTML = resourcesEls;
 
-  product.className = 'product';
-  product.dataset.id = id;
+    addEventListener('hashchange', () => {
+        const resourceLinks = resourcesHtmlEl.querySelectorAll('.resources li a');
+        resourceLinks.forEach((link) => {
+            link.classList.remove('active');
+        });
+        //.classList.add('active');
 
-  productImgWrap.className = 'product-img';
-  productImg.src = imgPath;
-  productImg.alt = img;
-  productImgWrap.append(productImg);
+        //    const url = baseUrl + hash.slice(1);
+        //    console.log(url);
 
-  productTitle.className = 'product-title';
-  productTitle.innerHTML = title;
+    });
 
-  productPriceBlock.className = 'product-price-block';
-  productPrice.className = 'product-price';
-  productPrice.innerHTML = price;
-  
-  addCart.className = 'add-cart';
-  addCart.innerHTML = 'Add cart'
-  productPriceBlock.append(productPrice, addCart);
-
-  productCategory.className = 'product-category';
-  productCategory.innerText = category;
-
-  product.append(
-    productImgWrap,
-    productTitle,
-    productPriceBlock,
-    productCategory
-  );
-
-  parentEl.append(product);
-
-  addCart.onclick = addCartHandler;
-}
-
-function renderCart(dataArr, cartProdsObj, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  const 
-    cart = doc.createElement('div'),
-    cartTitle = doc.createElement('h3'),
-    cartProds = doc.createElement('ul');
-
-  if (!parentEl) {
-    console.error(`[${insertSelector}]: Parent element not found !!!`);
-    return false;
-  }
-
-  cart.className = 'cart';
-
-  cartTitle.className = 'cart-title';
-  cartTitle.innerText = 'Cart';
-
-  cartProds.className = 'cart-prods';
-
-  parentEl.append(cart);
-  cart.append(cartTitle, cartProds);
-
-  renderCartProds(dataArr, cartProdsObj, '.cart-prods');
-  renderCartTotal(5000, '.cart');
-}
-
-function renderCartProds(dataArr, cartProdsObj, insertSelector) {
-  let count = 1;
-
-  for (id in cartProdsObj) {
-    const qty = cartProdsObj[id];
-    const prod = dataArr.find(item => item.id == id);
-
-    renderCartProd(prod, qty, count, insertSelector);
-    count ++;
-  }
-}
-
-function renderCartProd(prodObj, cartProdQty, count,  insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function renderCartTotal(totalSum, insertSelector) {
-  const parentEl = doc.querySelector(insertSelector);
-
-  
-}
-
-function addCartHandler() {
-  const id = this.closest('.product').dataset.id;
-  
-  cart[id] = !cart[id] ? 1 : cart[id] + 1;
+    console.log(resources);
 }
