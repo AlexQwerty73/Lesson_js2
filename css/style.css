@@ -2,32 +2,49 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: sans-serif;
 }
 
-li{
+li {
   list-style: none;
 }
 
-a{
+body {
+  font-family: sans-serif;
+}
+
+button {
+  text-decoration: none;
+  display: flex;
+  padding: 20px;
+  background: #ccfacc;
   color: black;
 }
 
-h2 {}
-
-.btn{
-  padding: 10px;
-  margin: 1px;
-  border: 1px solid silver;
-  cursor: pointer;
+label,
+input {
+  display: block;
+  padding: 5px;
 }
 
-.btn:hover{
+h2 {
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.btn {
+  padding: 10px;
+  border: 1px solid silver;
+  display: block;
+}
+.btn:hover {
+  cursor: pointer;
   background: silver;
 }
-
-.resources li .active{
-  color: rgb(255, 77, 77);
+.btn_active {
+  background: silver;
 }
 
 .container {
@@ -35,38 +52,46 @@ h2 {}
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  height: 100vh;
 }
 
 .header,
 .main,
-footer{
+.footer {
   padding: 0 20px;
 }
 
 .header {
   padding: 20px;
-  background: rgb(58, 58, 58);
+  background: #29272c;
   color: white;
+  margin-bottom: 20px;
 }
-
 .main {
   display: flex;
+  margin-bottom: 20px;
 }
 
-.sidebar{
+.sidebar {
   padding-right: 20px;
   margin-right: 20px;
   border-right: 2px solid silver;
 }
 
-.resources{}
+.resources {}
+.resource {
+  margin: 1px;
+}
 
-.resource{}
-
-.content{}
+.content {}
+.data {}
+.data-item {
+  margin: 1px;
+}
 
 .footer {
   padding: 20px;
   background: silver;
-  margin-top: 10px;
+  margin-top: auto;
 }
+
