@@ -87,15 +87,17 @@ a {
 .data {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: left;
 }
 .data-item {
   margin: 10px;
-  max-width: 400px;
+  /* max-width: 400px; */
   display: flex;
   flex-wrap: wrap;
-  
-  overflow-x: scroll;
+
+  display: flex;
+  flex-direction: column;
+
 }
 
 .footer {
