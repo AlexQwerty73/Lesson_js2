@@ -2,50 +2,45 @@ import { getData } from "../API/api.js";
 import { getHash } from "../utils/utils.js";
 
 const doc = document;
-
 const cachedData = {};
 
 export const renderData = async () => {
   const hash = getHash();
   const parEl = doc.querySelector('.data');
-
-  //бере усе після останього /
   const idElement = Number(location.href.slice(location.href.lastIndexOf('/') + 1));
+
+  parEl.innerHTML = '<h3>Loading data...</h3>';
 
   if (!hash) return;
 
-  if (Number.isInteger(idElement)) {
-    // прибирає усе після останього /
-    const nh = hash.substring(0, hash.lastIndexOf('/'));
+  //якщо після останньої / є число то видаляє усе що знаходиться після якщо ні то бере нормальний hash
+  const hashKey = Number.isInteger(idElement) ? hash.substring(0, hash.lastIndexOf('/')) : hash;
 
-    //якщо нема в cachedData то заносить туди данні 
-    if (!cachedData[nh]) {
-      cachedData[nh] = await getData(nh);
-    }
+  //якщо данних немає в cachedData то записує туди їх
+  if (!cachedData[hashKey]) cachedData[hashKey] = await getData(hashKey);
 
-    const data = cachedData[nh];
-
-    const html = `<div class="btn data-item">
-    ${Object.keys(data['results'][idElement])
-        .map(key => `<li>${key}: ${data['results'][idElement][key]}</li>`).join('')}</div>`;
-
-    parEl.innerHTML = html;
-    return;
-  }
-
-  //якщо нема в cachedData то заносить туди данні 
-  if (!cachedData[hash]) {
-    cachedData[hash] = await getData(hash);
-  }
-
-  const data = cachedData[hash];
+  const data = cachedData[hashKey];
 
   const html =
-    Object.keys(data['results'])
-      .map((key, i) => `<div class="btn data-item"><a href="#/${hash}/${i}">${Object.keys(data['results'][key])
-        .map(k => `<li>${k}: ${data['results'][key][k]}</li>`)
-        .join('')}</a></div>`)
-      .join('');
+    Number.isInteger(idElement)
+      ? singleDataHtml()
+      : listDataHtml();
 
   parEl.innerHTML = html;
+
+  function singleDataHtml() {
+    return `<div class="btn data-item">
+      ${Object.keys(data['results'][idElement])
+        .map(key => `<br><li>${key}: ${data['results'][idElement][key]}</li><br>`)
+        .join('')}</div>`
+  };
+
+  function listDataHtml() {
+    return Object.keys(data['results'])
+      .map((key, i) => (`<div class="btn data-item"><a href="#${hash}/${i}">
+      ${Object.keys(data['results'][key])
+          .map(k => `<li>${k}: ${data['results'][key][k]}</li><br>`)
+          .join('')}</a></div>`))
+      .join('');
+  }
 };
