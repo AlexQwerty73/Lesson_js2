@@ -117,3 +117,46 @@ function findMissingLetter(array) {
         }
     }
 }
+
+snail = function (array) {
+    const arrLen = array.length;
+    const allNumsCount = Math.pow(arrLen, 2);
+
+    let snail = [];
+    let i = 0;
+    do {
+        for (let j = i; j < arrLen - i; j++) {
+            snail.push(array[i][j]);
+            if (snail.length == allNumsCount) break;
+        }
+        if (snail.length == allNumsCount) break;
+        for (let j = i + 1; j < arrLen - i; j++) {
+            snail.push(array[j][arrLen - i - 1]);
+            if (snail.length == allNumsCount) break;
+        }
+        if (snail.length == allNumsCount) break;
+        for (let j = arrLen - i - 1; j > i; j--) {
+            snail.push(array[arrLen - i - 1][j - 1]);
+            if (snail.length == allNumsCount) break;
+        }
+        if (snail.length == allNumsCount) break;
+        for (let j = arrLen - i - 1; j > i + 1; j--) {
+            snail.push(array[j - 1][i]);
+            if (snail.length == allNumsCount) break;
+        }
+        if (snail.length == allNumsCount) break;
+        i++;
+
+    } while (snail.length < allNumsCount)
+
+    if(snail.includes(undefined)) return [];
+    return snail;
+}
+
+
+console.log(snail([[1, 2, 3, 4, 5],
+[6, 7, 8, 9, 10],
+[11, 12, 13, 14, 15],
+[16, 17, 18, 19, 20],
+[21, 22, 23, 24, 25]]));
+//[1, 2, 3, 4, 5, 5, 10, 15, 20, 25, 24, 23, 22, 21, 16, 11, 6, 7, 8, 9, 14, 19, 24, 18, 17]
