@@ -149,14 +149,27 @@ snail = function (array) {
 
     } while (snail.length < allNumsCount)
 
-    if(snail.includes(undefined)) return [];
+    if (snail.includes(undefined)) return [];
     return snail;
 }
 
 
-console.log(snail([[1, 2, 3, 4, 5],
-[6, 7, 8, 9, 10],
-[11, 12, 13, 14, 15],
-[16, 17, 18, 19, 20],
-[21, 22, 23, 24, 25]]));
-//[1, 2, 3, 4, 5, 5, 10, 15, 20, 25, 24, 23, 22, 21, 16, 11, 6, 7, 8, 9, 14, 19, 24, 18, 17]
+// console.log(snail([[1, 2, 3, 4, 5],
+// [6, 7, 8, 9, 10],
+// [11, 12, 13, 14, 15],
+// [16, 17, 18, 19, 20],
+// [21, 22, 23, 24, 25]]));
+
+var maxSequence = function (arr) {
+    let maxSum = 0;
+    let curSum = 0;
+  
+    for (let i = 0; i < arr.length; i++) {
+      curSum = Math.max(0, curSum + arr[i]);
+      maxSum = Math.max(maxSum, curSum);
+    }
+  
+    return maxSum;
+  };
+
+console.log(maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]));//6
