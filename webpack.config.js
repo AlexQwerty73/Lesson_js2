@@ -20,6 +20,7 @@ module.exports = {
         clean: true,
         filename: '[name].[contenthash].js'
     },
+    
     plugins: [
         new HtmlWebpackPlugin({
             template: path.resolve(__dirname, 'src', 'index.html'),

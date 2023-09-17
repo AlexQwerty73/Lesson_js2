@@ -1,1 +1,0 @@
-!function(){"use strict";console.log(((o,c)=>o*c))}();
