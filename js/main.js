@@ -163,13 +163,30 @@ snail = function (array) {
 var maxSequence = function (arr) {
     let maxSum = 0;
     let curSum = 0;
-  
-    for (let i = 0; i < arr.length; i++) {
-      curSum = Math.max(0, curSum + arr[i]);
-      maxSum = Math.max(maxSum, curSum);
-    }
-  
-    return maxSum;
-  };
 
-console.log(maxSequence([-2, 1, -3, 4, -1, 2, 1, -5, 4]));//6
+    for (let i = 0; i < arr.length; i++) {
+        curSum = Math.max(0, curSum + arr[i]);
+        maxSum = Math.max(maxSum, curSum);
+    }
+
+    return maxSum;
+};
+
+const zero = (op) => op ? op(0) : 0;
+const one = (op) => op ? op(1) : 1;
+const two = (op) => op ? op(2) : 2;
+const three = (op) => op ? op(3) : 3;
+const four = (op) => op ? op(4) : 4;
+const five = (op) => op ? op(5) : 5;
+const six = (op) => op ? op(6) : 6;
+const seven = (op) => op ? op(7) : 7;
+const eight = (op) => op ? op(8) : 8;
+const nine = (op) => op ? op(9) : 9;
+
+const plus = r => l => l + r
+const minus = r => l => l - r; 
+const times = r => l => l * r;
+const dividedBy = r => l => r === 0 ? "+0" : l / r;
+
+
+console.log(seven(minus(two())));
