@@ -184,9 +184,87 @@ const eight = (op) => op ? op(8) : 8;
 const nine = (op) => op ? op(9) : 9;
 
 const plus = r => l => l + r
-const minus = r => l => l - r; 
+const minus = r => l => l - r;
 const times = r => l => l * r;
 const dividedBy = r => l => r === 0 ? "+0" : l / r;
 
 
-console.log(seven(minus(two())));
+function numbersOfLetters(integer) {
+    const strNumsArr = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+
+    const numToStr = (num) => num < 10 ? strNumsArr[num] : num.toString().split('').map(digit => strNumsArr[Number(digit)]).join('');
+
+    const resArr = [];
+
+    while (integer !== 4) {
+        const stringNums = numToStr(integer);
+        resArr.push(stringNums);
+        integer = stringNums.length;
+    }
+
+    resArr.push('four');
+
+    return resArr;
+}
+
+function findSequences(n) {
+    let res = [];
+    for (let i = 1; i < n; i++) {
+        let sum = 0;
+        let sequence = [];
+        for (let j = i; j <= n; j++) {
+            sequence.push(j);
+            sum += j;
+            if (sum === n) {
+                res.push(sequence.slice());
+                break;
+            }
+            if (sum > n) {
+                break;
+            }
+        }
+    }
+    return res.reverse();
+}
+
+function perfectSquare(string) {
+    const rows = string.trim().split('\n');
+    const numRows = rows.length;
+    const rowLength = rows[0].length;
+
+    for (const row of rows) {
+        if (row.length !== rowLength || !/^[.\n]*$/.test(row)) {
+        }
+    }
+    return numRows === rowLength;
+}
+
+function sort(students) {
+    const sortedStudents = students.sort((a, b) => {
+        if (b.gpa !== a.gpa) {
+            return b.gpa - a.gpa;
+        }
+        const lastNameA = a.fullName.split(' ')[1][0];
+        const lastNameB = b.fullName.split(' ')[1][0];
+        if (lastNameA !== lastNameB) {
+            return lastNameA.localeCompare(lastNameB);
+        }
+        return a.age - b.age;
+    });
+
+    const namesStr = sortedStudents.map(student => student.fullName).join(',');
+    return namesStr;
+}
+
+class Student {
+    constructor(age, gpa, fullName) {
+        this.age = age;
+        this.gpa = gpa;
+        this.fullName = fullName;
+    };
+};
+var students = [new Student(23, 88, "David Goodman"),
+new Student(25, 82, "Mark Rose"),
+new Student(22, 90, "Jane Doe"),
+new Student(25, 90, "Jane Dane")];
+console.log(sort(students));
