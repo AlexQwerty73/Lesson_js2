@@ -267,4 +267,29 @@ var students = [new Student(23, 88, "David Goodman"),
 new Student(25, 82, "Mark Rose"),
 new Student(22, 90, "Jane Doe"),
 new Student(25, 90, "Jane Dane")];
-console.log(sort(students));
+
+
+function combine(arr, ...arrs) {
+    let newArr = [];
+
+    for (let i = 0; i < arr.length; i++) {
+        newArr.push(arr[i]);
+
+        for (let j = 0; j < arrs.length; j++) {
+            if (arrs[j][i]) {
+                newArr.push(arrs[j][i]);
+            }
+        }
+    }
+
+    for (let j = 0; j < arrs.length; j++) {
+        for (let i = arr.length; i < arrs[j].length; i++) {
+            newArr.push(arrs[j][i]);
+        }
+    }
+
+    return newArr;
+}
+
+
+console.log(combine(['a', 'b', 'c'], [1, 2, 3, 4, 5], [6, 7], [8]));
