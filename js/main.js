@@ -291,5 +291,40 @@ function combine(arr, ...arrs) {
     return newArr;
 }
 
+function revWords(str) {
+    return str.split(' ').map(word => word.split('').reverse().join('')).join(' ');
+}
 
-console.log(combine(['a', 'b', 'c'], [1, 2, 3, 4, 5], [6, 7], [8]));
+function move(pos, num) {
+    return num * 2 + pos;
+}
+
+function palindrom(x) {
+    return x.toLowerCase() === x.split('').reverse().join('').toLowerCase();
+}
+
+function howMuch(num) {
+    const arr = ['i love you', 'a little', 'a lot', 'passionely', 'madly', 'not at all']
+
+    if (num > 6) {
+        do {
+            num -= 6;
+        } while (num >= 6);
+    }
+    return arr[num - 1];
+}
+
+function firNonCon(arr) {
+    let n = arr[1] - arr[0];
+    let res = arr[1];
+
+    for (let i in arr) {
+        if (arr[Number(i) + 1] - arr[i] == n && i != 0) {
+            res = arr[i]
+        }
+    }
+
+    return res;
+}
+
+console.log(firNonCon([1, 3, 4, 5, 6, 7, 8, 9]));
