@@ -327,4 +327,138 @@ function firNonCon(arr) {
     return res;
 }
 
-console.log(firNonCon([1, 3, 4, 5, 6, 7, 8, 9]));
+function sortArray(array) {
+    const idAndNum = array.map((n, i) => [n, i]);
+    const odds = idAndNum.filter(n => n[0] % 2 !== 0);
+    const sortedOdds = odds.sort((a, b) => a[0] - b[0]);
+    const resArr = idAndNum.map((arr, i) => {
+        if (arr[0] % 2 !== 0) {
+            return [sortedOdds.shift()[0], arr[1]];
+        } else {
+            return [arr[0], i];
+        }
+    });
+
+    resArr.sort((a, b) => a[1] - b[1]);
+
+    return resArr.map(arr => arr[0]);
+}
+
+function squareDigits(num) {
+    return Number(num.toString().split('').map(n => Math.pow(Number(n), 2).toString()).join(''));
+}
+
+function productFib(prod) {
+    let multS = 0;
+    let fib = [0, 1];
+
+    while (prod > multS) {
+        let n1 = fib[0];
+        let n2 = fib[1];
+
+        multS = n1 * n2;
+        if (multS >= prod) break;
+        fib = [fib[1], fib[1] + fib[0]];
+    }
+
+    return [fib[0], fib[1], multS === prod];
+}
+
+class NamedOne {
+    constructor(fn, ln) {
+        this._firstName = fn;
+        this._lastName = ln;
+        this.updateFullName();
+    }
+
+    get firstName() {
+        return this._firstName;
+    }
+
+    set firstName(newFirstName) {
+        this._firstName = newFirstName;
+        this.updateFullName();
+    }
+
+    get lastName() {
+        return this._lastName;
+    }
+
+    set lastName(newLastName) {
+        this._lastName = newLastName;
+        this.updateFullName();
+    }
+
+    get fullName() {
+        return this._fullName;
+    }
+
+    set fullName(newFullName) {
+        const names = newFullName.split(' ');
+        if (names.length === 2) {
+            this._firstName = names[0];
+            this._lastName = names[1];
+            this.updateFullName();
+        }
+    }
+
+    updateFullName() {
+        this._fullName = this._firstName + ' ' + this._lastName;
+    }
+}
+
+const sequenceSum = (begin, end, step) => {
+    let res = 0;
+    for (let i = begin; i <= end; i += step) {
+        res += i;
+    }
+    return res;
+};
+
+function narcissistic(value) {
+    const nums = value.toString().split('').map(char => Number(char));
+    const count = nums.length;
+
+    return nums.reduce((sum, num) => sum + Math.pow(num, count), 0) === value;
+}
+
+function stringExpansion(str) {
+    let res = '';
+    let count = 1;
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charAt(i);
+
+        if (/[0-9]/.test(char)) {
+            count = Number(char);
+        } else {
+            res += char.repeat(count);
+        }
+    }
+
+    return res;
+}
+
+function toCamelCase(str) {
+    const words = str.split(/[-_ ]/);
+
+    return words[0] + words.slice(1).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('');
+}
+
+function humanReadable(seconds) {
+    let h, m, s;
+
+    h = Math.floor(seconds / 3600);
+    seconds -= h * 3600;
+    
+    h = h.toString().length == 1 ? `0${h}` : h;
+    m = Math.floor(seconds / 60);
+    m = m.toString().length == 1 ? `0${m}` : m;
+    seconds -= m * 60;
+    s = seconds;
+    s = s.toString().length == 1 ? `0${s}` : s;
+
+    return  `${h}:${m}:${s}`;
+}
+
+console.log(humanReadable(45296))//'12:34:56'
